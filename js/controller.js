@@ -2,7 +2,15 @@ var controller = {
 	init: function(){
 		/* TODO: Authentication Logic : Ask for 
 				login if not authenticated else display desktop */
-		this.initDesktop();
+		if(!$.cookie('auth-token')){
+			view.login();
+		}else{
+			this.initDesktop();
+		}	
+	},
+	authenticate: function(username, password){
+		$.cookie('auth-token', 'Basic ' + $.base64.encode(username + ':' + password));
+		this.init();
 	},
 	initDesktop: function(){
 		/* get user workspace data from model and ask view to display desktop */
@@ -22,8 +30,13 @@ var controller = {
 			});
 	},
 	handleBlobishDoubleClick: function(event){
-		/* if document is file-like then display */
-		model.getBlob(event.data.doc);		
+		/* if document is file-like then display a pdf preview*/
+		model.getPdfPreview(event.data.doc, function(){
+			if(this.status == 200){
+ 				var fileURL = URL.createObjectURL(this.response);
+       			window.open(fileURL);
+ 			}
+		});		
 	},
 	isFolderish: function(doc){
 		return doc.facets.indexOf('Folderish') > -1;

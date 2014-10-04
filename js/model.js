@@ -9,8 +9,10 @@
  		LAYER: {
  			DESKTOP: 0,
  			WINDOW: 1
- 		}
+ 		},
+ 		AUTH: ''
  	},
+ 	/* Root document is used to init desktop */
  	getRoot: function(username){
  		return $.ajax({
  			url: '/nuxeo/api/v1/path/default-domain/UserWorkspaces/' + username,
@@ -21,6 +23,7 @@
  			}
  		});    	
  	},
+ 	/* self explanatory */
  	getChildren: function(doc){
  		return $.ajax({
  			url: ['/nuxeo/api/v1/id/',doc.uid,'/@children'].join(''),
@@ -36,6 +39,7 @@
  			}
  		});	
  	},
+ 	/* get result of the getChildren operation and add a ref to parent */
  	getContent: function(nuxeoResponse){
  		return {
  			parentUid: nuxeoResponse.parentUid,
@@ -43,38 +47,27 @@
  			children: nuxeoResponse.entries
  		};
  	},
- 	getBlobAsPDF: function(doc){
- 		return $.ajax({
- 			url: ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content/@op/Blob.ToPDF'].join(''),
- 			type: 'POST',
- 			contentType: 'application/json+nxrequest',
- 			data: JSON.stringify({'params':{}}),
- 			dataType: 'text',
- 			beforeSend: function(xhr){
- 				xhr.setRequestHeader('X-NXDocumentProperties','*');
- 				xhr.setRequestHeader("Authorization", "Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y");
- 			}
- 		});	
- 	},
- 	// TODO : get info about how to handle this async
- 	getBlob: function (doc){
- 		var blob;
+ 	/* convert a blob holder as a pdf and get result as stream */
+ 	getPdfPreview: function (doc, callback){
  		var xhr = new XMLHttpRequest();
- 		xhr.open("POST", ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content/@op/Blob.ToPDF'].join(''), true);
- 		xhr.setRequestHeader('X-NXDocumentProperties','*');
- 		xhr.setRequestHeader("Authorization", "Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y");
- 		xhr.setRequestHeader("Content-Type", 'application/json+nxrequest');
+ 		xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content/@op/Blob.ToPDF'].join(''), true);
+ 		xhr.setRequestHeader('Authorization', 'Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y');
+ 		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
  		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
- 		xhr.overrideMimeType("application/pdf; charset=x-user-defined");
+ 		xhr.overrideMimeType('application/pdf');
  		xhr.responseType = 'blob';
- 		xhr.onload = function(e){
- 			if(this.status == 200){
- 				blob = this.response;
- 				var fileURL = URL.createObjectURL(blob);
-       			window.open(fileURL);
- 			}
- 		}
+ 		xhr.onload = callback;
  		xhr.send(JSON.stringify({'params':{}}));
- 		return blob;
+ 	},
+ 	getBlob: function (doc, callback){
+ 		var xhr = new XMLHttpRequest();
+ 		xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@op/Blob.Get'].join(''), true);
+ 		xhr.setRequestHeader('Authorization', 'Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y');
+ 		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
+ 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+ 		xhr.overrideMimeType(doc.properties['file:content']['mime-type']);
+ 		xhr.responseType = 'blob';
+ 		xhr.onload = callback;
+ 		xhr.send(JSON.stringify({'params':{}}));
  	},
 }

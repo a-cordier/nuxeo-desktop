@@ -1,0 +1,47 @@
+body {
+  background-image: url("../img/desktop-bg.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+} 
+
+.bg {}
+
+.icon-big{
+  height: 32px;
+  width: 32px;
+}
+
+.folder-collapsed-icon{
+  margin: auto;
+  background-image: url("../img/Folder-32.png");
+}
+
+.file-blank-icon{
+  margin: auto;
+  background-image: url("../img/File-blank-32.png");
+}
+
+
+.icon-caption{
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dialog_window li{
+        width: 64px;
+        height: 64px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        list-style: none;
+        float: left;
+}
+
+#desktop li {
+  width: 64px;
+    height: 64px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    list-style: none;
+    float: left;
+}
