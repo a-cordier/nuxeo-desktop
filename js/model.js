@@ -19,7 +19,7 @@
  			type: 'GET',
  			dataType: 'json',
  			beforeSend: function(xhr){
- 				xhr.setRequestHeader("Authorization", "Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y");
+ 				model.setCredentials(xhr);
  			}
  		});    	
  	},
@@ -30,8 +30,8 @@
  			type: 'GET',
  			dataType: 'json',
  			beforeSend: function(xhr){
+ 				model.setCredentials(xhr);
  				xhr.setRequestHeader('X-NXDocumentProperties','*');
- 				xhr.setRequestHeader("Authorization", "Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y");
  			},
  			success: function(data){
  				data.parentUid = doc.uid;
@@ -51,7 +51,7 @@
  	getPdfPreview: function (doc, callback){
  		var xhr = new XMLHttpRequest();
  		xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content/@op/Blob.ToPDF'].join(''), true);
- 		xhr.setRequestHeader('Authorization', 'Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y');
+ 		model.setCredentials(xhr);
  		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
  		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
  		xhr.overrideMimeType('application/pdf');
@@ -59,15 +59,23 @@
  		xhr.onload = callback;
  		xhr.send(JSON.stringify({'params':{}}));
  	},
+ 	/* get blob from blob as stream */
  	getBlob: function (doc, callback){
  		var xhr = new XMLHttpRequest();
  		xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@op/Blob.Get'].join(''), true);
- 		xhr.setRequestHeader('Authorization', 'Basic QWRtaW5pc3RyYXRvcjpBZG1pbmlzdHJhdG9y');
- 		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
+		model.setCredentials(xhr); 		
+		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
  		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
  		xhr.overrideMimeType(doc.properties['file:content']['mime-type']);
  		xhr.responseType = 'blob';
  		xhr.onload = callback;
  		xhr.send(JSON.stringify({'params':{}}));
  	},
+ 	/* get blob as stream */
+ 	getDocumentById: function (id){
+ 		
+ 	},
+ 	setCredentials: function(xhr){
+ 		xhr.setRequestHeader('Authorization', $.cookie('nx-auth'));
+ 	}
 }

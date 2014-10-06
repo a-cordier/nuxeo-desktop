@@ -2,19 +2,20 @@ var controller = {
 	init: function(){
 		/* TODO: Authentication Logic : Ask for 
 				login if not authenticated else display desktop */
-		if(!$.cookie('auth-token')){
+		if(!$.cookie('nx-auth')){
 			view.login();
 		}else{
 			this.initDesktop();
 		}	
 	},
 	authenticate: function(username, password){
-		$.cookie('auth-token', 'Basic ' + $.base64.encode(username + ':' + password));
+		$.cookie('nx-auth', 'Basic ' + $.base64.encode(username + ':' + password));
+		$.cookie('nx-user', username);
 		this.init();
 	},
 	initDesktop: function(){
 		/* get user workspace data from model and ask view to display desktop */
-		model.getRoot('Administrator').
+		model.getRoot($.cookie('nx-user')).
 			then(model.getChildren).
 			then(model.getContent).
 			then(function(content){
