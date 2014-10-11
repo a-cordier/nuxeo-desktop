@@ -96,7 +96,8 @@ var view = {
       for(var i in cols){
         tr.append($('<td>').html(cols[i]));
       }
-      return table.append(tr);
+      table.append(tr);
+      return tr;
     };
 
     head(table, ['', 'Title', 'Modified', 'Created', 'Type']);
@@ -121,7 +122,7 @@ var view = {
       }
     }
 
-    $(divId).dialog().
+    $(divId).dialog({'width':500,'height':375}).
       dialogExtend({
         "closable" : true,
         "maximizable" : true, // enable/disable maximize button
