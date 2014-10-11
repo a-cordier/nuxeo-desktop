@@ -9,6 +9,7 @@ var controller = {
 		}	
 	},
 	authenticate: function(username, password){
+		/* MOCK // TODO: Authentication logic and security based on session id */
 		$.cookie('nx-auth', 'Basic ' + $.base64.encode(username + ':' + password));
 		$.cookie('nx-user', username);
 		this.init();

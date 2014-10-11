@@ -5,8 +5,6 @@ body {
   background-position: center;
 } 
 
-.bg {}
-
 .icon-big{
   height: 32px;
   width: 32px;
@@ -15,11 +13,15 @@ body {
 .folder-collapsed-icon{
   margin: auto;
   background-image: url("../img/Folder-32.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .file-blank-icon{
   margin: auto;
   background-image: url("../img/File-blank-32.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 
@@ -28,14 +30,17 @@ body {
   font-weight: 700;
 }
 
-.dialog_window li{
-        width: 64px;
-        height: 64px;
-        margin-right: 5px;
-        margin-bottom: 5px;
-        list-style: none;
-        float: left;
+.ui-dialog .ui-dialog-content {
+    padding: 0;
 }
+
+.ui-widget-header {
+    background: #3e5057;
+    border: 0;
+    color: #fff;
+    font-weight: normal;
+}
+
 
 #desktop li {
   width: 64px;
@@ -44,4 +49,27 @@ body {
     margin-bottom: 5px;
     list-style: none;
     float: left;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+th,
+td {
+  padding: 6px 15px;
+}
+th {
+  background: #5a8391;
+  color: #fff;
+  text-align: left;
+}
+td {
+  border-right: 0;
+  border-bottom: 0;
+}
+
+tbody tr:nth-child(even){
+  background: #eaeaed;
 }

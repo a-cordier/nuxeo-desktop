@@ -9,8 +9,7 @@
  		LAYER: {
  			DESKTOP: 0,
  			WINDOW: 1
- 		},
- 		AUTH: ''
+ 		}
  	},
  	/* Root document is used to init desktop */
  	getRoot: function(username){
