@@ -31,24 +31,25 @@ body {
 }
 
 .ui-dialog .ui-dialog-content {
-    padding: 0;
+  padding: 0;
 }
 
 .ui-widget-header {
-    background: #3e5057;
-    border: 0;
-    color: #fff;
-    font-weight: normal;
+  background: #3e5057;
+  border-radius: 0;
+  border: 0;
+  color: #fff;
+  font-weight: normal;
 }
 
 
 #desktop li {
   width: 64px;
-    height: 64px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    list-style: none;
-    float: left;
+  height: 64px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  list-style: none;
+  float: left;
 }
 
 table {
@@ -72,4 +73,13 @@ td {
 
 tbody tr:nth-child(even){
   background: #eaeaed;
+}
+/* menu bar  footer */
+footer {
+  background-color: #5a8391;
+  width: 100%;
+  height: 30px;
+  bottom: 0;
+  left: 0;
+  position: fixed;
 }

@@ -10,11 +10,11 @@ var view = {
         $('input[type="password"]').val());
     });
   },
-  display: function(layer, content){
+  display: function(layer, content, params){
     if(layer==model.constants.LAYER.DESKTOP){
       this.displayDestop(content);
     }else if(layer==model.constants.LAYER.WINDOW){
-      this.displayWindowAsList(content);
+      this.displayWindowAsList(content, params);
     }
   },
   displayDestop: function(content){
@@ -62,69 +62,58 @@ var view = {
   }
      $(divIdSelector).dialog(); // open dialog
    },
-   displayWindowAsList: function(content) {
+   displayWindowAsList: function(content, params) {
+    if(!params.windowId) { 
+      view.createWindow(content);
+    }else {
+      view.updateWindow(content , params.windowId);
+    }
+  },
+  createWindow: function(content){
     var divId = '#' + content.parentUid;
-     /* window is unique */
-     if($(divId).length!=0){
+    /* window is unique */
+    if($(divId).length!=0){
       $(divId).dialog('destroy');
       $(divId).remove();
     } 
-    var children = content.children;  
+    var children = content.children;
     /* Create and fill window */
     $('body').append(
       $('<div>').
-        attr('title', content.parentTitle).
-        attr('id', content.parentUid).
-        addClass('dialog_window'));
+      attr('title', content.parentTitle).
+      attr('id', content.parentUid).
+      addClass('dialog_window'));
     /* create and fill table */
     var table = $('<table>'); 
     $(divId).append(table);
 
-    /* add table header */
-    var head = function(table, headers){
-      var tr = table.append($('<thead>').append('<tr>'));
-      console.log(tr.html());
-      for(var i in headers){
-        tr.append($('<th>').html(headers[i]));
-      }
-      table.append($('<tbody>'));
-    };
-
-    /* add table row */
-    var newRow = function(table, cols){
-      var tr = $('<tr>');
-      for(var i in cols){
-        tr.append($('<td>').html(cols[i]));
-      }
-      table.append(tr);
-      return tr;
-    };
-
-    head(table, ['', 'Title', 'Modified', 'Created', 'Type']);
+    view.head(table, ['', 'Title', 'Modified', 'Created', 'Type']);
     for(var i in children){
       var child = children[i];
       if(controller.isFolderish(child)){
-        var row = newRow(table, 
+        var row = view.newRow(table, 
           ['<div class="folder-collapsed-icon icon-big"/>', 
           child.title, 
           child.lastModified, 
           child.properties['dc:created'], 'Folder']);
         row.dblclick(
-          {doc: child}, controller.handleFolderishDoubleClick);
+          {doc: child, windowId: content.parentUid}, 
+          controller.handleFolderishDoubleClick);
       }else{
-        var row = newRow(table, 
+        var row = view.newRow(table, 
           ['<div class="file-blank-icon icon-big"/>', 
           child.title, 
           child.lastModified, 
           child['dc:created'], 'File']);
         row.dblclick(
-          {doc: child}, controller.handleBlobishDoubleClick);
+          {doc: child}, 
+          controller.handleBlobishDoubleClick);
       }
     }
 
     $(divId).dialog({'width':500,'height':375}).
-      dialogExtend({
-        "closable" : true,
+    dialogExtend({
+      "closable" : true,
         "maximizable" : true, // enable/disable maximize button
         "minimizable" : true, // enable/disable minimize button
         "collapsable" : true, // enable/disable collapse button
@@ -135,10 +124,54 @@ var view = {
           "minimize" : "ui-icon-circle-minus",
           "collapse" : "ui-icon-triangle-1-s",
           "restore" : "ui-icon-bullet"
-},
-      }); // open dialog
-   },
-   cropTitle: function(title){
+        },
+      });
+  },
+  updateWindow: function(content, windowId){
+    var children = content.children;
+    var targetWindow = $('#'+windowId);
+    $('#'+windowId+' tr').remove();
+    var table = $('#'+windowId+' table');
+    for(var i in children){
+      var child = children[i];
+      if(controller.isFolderish(child)){
+        var row = view.newRow(table, 
+          ['<div class="folder-collapsed-icon icon-big"/>', 
+          child.title, 
+          child.lastModified, 
+          child.properties['dc:created'], 'Folder']);
+        row.dblclick(
+          {doc: child, windowId: content.parentUid}, 
+          controller.handleFolderishDoubleClick);
+      }else{
+        var row = view.newRow(table, 
+          ['<div class="file-blank-icon icon-big"/>', 
+          child.title, 
+          child.lastModified, 
+          child['dc:created'], 'File']);
+        row.dblclick(
+          {doc: child}, 
+          controller.handleBlobishDoubleClick);
+      }
+    }
+  },
+  newRow: function(table, cols){ // add table row
+    var tr = $('<tr>');
+    for(var i in cols){
+      tr.append($('<td>').html(cols[i]));
+    }
+    table.append(tr);
+    return tr;
+  },    
+  head: function(table, headers){ // add table header
+    var tr = table.append($('<thead>').append('<tr>'));
+    console.log(tr.html());
+    for(var i in headers){
+      tr.append($('<th>').html(headers[i]));
+    }
+    table.append($('<tbody>'));
+  },
+  cropTitle: function(title){
     return title.length > 8 ? title.substring(0, 5) + '...' : title;
   }
 };

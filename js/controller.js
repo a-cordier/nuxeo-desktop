@@ -28,7 +28,7 @@ var controller = {
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
-				view.display(model.constants.LAYER.WINDOW, content);
+				view.display(model.constants.LAYER.WINDOW, content, {windowId:event.data.windowId});
 			});
 	},
 	handleBlobishDoubleClick: function(event){
