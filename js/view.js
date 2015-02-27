@@ -31,38 +31,7 @@ var view = {
       }
     }
   },
-  displayWindow: function(content) {
-   var divIdSelector = '#' + content.parentUid;
-   /* One window per folder */
-   if($(divIdSelector).length!=0){
-    $(divIdSelector).dialog("destroy");
-    $(divIdSelector).remove();
-  } 
-  /* Create and fill window */
-  var children = content.children;
-  $('body').append(
-    $('<div></div>').attr('title', content.parentTitle).
-    attr('id', content.parentUid).
-    addClass('dialog_window'));
-  var ulId = content.parentUid + 'Icons';
-  $('<ul></ul>').appendTo($(divIdSelector)).attr('id', ulId);
-  for(var i in children){
-    var iconPlaceHolder = $('<li></li>').appendTo($('#' + ulId));
-    if(controller.isFolderish(children[i])){
-      iconPlaceHolder.append($('<div></div>').addClass('icon-big folder-collapsed-icon'));
-      iconPlaceHolder.append($('<div></div>').addClass('icon-caption').text(this.cropTitle(children[i].title)));
-      iconPlaceHolder.dblclick(
-        {doc: children[i]}, controller.handleFolderishDoubleClick);
-    }else{
-      iconPlaceHolder.append($('<div></div>').addClass('icon-big file-blank-icon'));
-      iconPlaceHolder.append($('<div></div>').addClass('icon-caption').text(this.cropTitle(children[i].title)));
-      iconPlaceHolder.dblclick(
-        {doc: children[i]}, controller.handleBlobishDoubleClick);
-    }
-  }
-     $(divIdSelector).dialog(); // open dialog
-   },
-   displayWindowAsList: function(content, params) {
+  displayWindowAsList: function(content, params) {
     if(!params.windowId) { 
       view.createWindow(content);
     }else {
