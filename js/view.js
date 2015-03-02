@@ -57,29 +57,7 @@ var view = {
     $(divId).append(table);
 
     view.head(table, ['', 'Title', 'Modified', 'Created', 'Type']);
-    for(var i in children){
-      var child = children[i];
-      if(controller.isFolderish(child)){
-        var row = view.newRow(table, 
-          ['<div class="folder-collapsed-icon icon-big"/>', 
-          child.title, 
-          child.lastModified, 
-          child.properties['dc:created'], 'Folder']);
-        row.dblclick(
-          {doc: child, windowId: content.parentUid}, 
-          controller.handleFolderishDoubleClick);
-      }else{
-        var row = view.newRow(table, 
-          ['<div class="file-blank-icon icon-big"/>', 
-          child.title, 
-          child.lastModified, 
-          child['dc:created'], 'File']);
-        row.dblclick(
-          {doc: child}, 
-          controller.handleBlobishDoubleClick);
-      }
-    }
-
+    view.feedTable(table, content);
     $(divId).dialog({'width':500,'height':375}).
     dialogExtend({
       "closable" : true,
@@ -101,11 +79,16 @@ var view = {
     var targetWindow = $('#'+windowId);
     $('#'+windowId+' tr').remove();
     var table = $('#'+windowId+' table');
+    view.feedTable(table, content);
+    targetWindow.attr("id", content.parentUid);
+  },
+  feedTable: function(table, content){
+    var children = content.children;
     for(var i in children){
       var child = children[i];
       if(controller.isFolderish(child)){
         var row = view.newRow(table, 
-          ['<div class="folder-collapsed-icon icon-big"/>', 
+          ['<div class="glyphicon glyphicon-folder-close"/>', 
           child.title, 
           child.lastModified, 
           child.properties['dc:created'], 'Folder']);
@@ -114,7 +97,7 @@ var view = {
           controller.handleFolderishDoubleClick);
       }else{
         var row = view.newRow(table, 
-          ['<div class="file-blank-icon icon-big"/>', 
+          ['<div class="glyphicon glyphicon-file"/>', 
           child.title, 
           child.lastModified, 
           child['dc:created'], 'File']);

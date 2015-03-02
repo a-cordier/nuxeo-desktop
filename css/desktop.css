@@ -42,6 +42,13 @@ body {
   font-weight: normal;
 }
 
+.glyphicon-folder-open {
+    font-size: 2em;
+}
+
+.glyphicon-th-large{
+  font-size: 1.2em;
+}
 
 #desktop li {
   width: 64px;
@@ -76,7 +83,7 @@ tbody tr:nth-child(even){
 }
 /* menu bar  footer */
 footer {
-  background-color: #5a8391;
+  background-color: #101010;
   width: 100%;
   height: 30px;
   bottom: 0;

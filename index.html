@@ -9,6 +9,9 @@
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" type="text/css" href="css/desktop.css">
 	<link rel="stylesheet" type="text/css" href="css/modal.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	
 	<!--JQUERY-->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.js"></script>
@@ -16,6 +19,8 @@
 	<script type="text/javascript" src="lib/jquery.modal.min.js"></script>
 	<script type="text/javascript" src="lib/jquery.base64.js"></script>
 	<script type="text/javascript" src="lib/jquery.cookie.js"></script>
+	<!-- BOOTSTRAP JS -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	<!--APP-->
 	<script type="text/javascript" src="js/model.js"></script>
 	<script type="text/javascript" src="js/controller.js"></script>
@@ -33,6 +38,13 @@
 		<p><label>Password:</label><input type="password" /></p>
 		<p><input id="credentialSubmit" type="submit" value="Login" /></p>
 	</form>
-	<footer id='menuBar'></footer>
+	<footer id='menuBar'>
+		<div class="btn-group dropup">
+		<button class="btn btn-large dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span></button>
+		 <ul class="dropdown-menu">
+			<li>hello</li>
+  </ul>
+	</footer>
+</nav>
 </body>
 </html>
