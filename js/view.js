@@ -4,13 +4,8 @@ var view = {
       controller.authenticate($('input[type="text"]').val(), 
         $('input[type="password"]').val());
     });
-    var loginModal = $('#loginModal');
-    var windowHeight = $(window).height(); 
-    var modalHeight = loginModal.height(); 
-    var ratio = modalHeight/parseFloat(windowHeight);
-    alert(ratio);
-    loginModal.css({'top': ratio+'%'}); // vertical alignement
-    loginModal.modal({'backdrop':false});
+
+    $('#loginModal').modal({'backdrop':false});
   },
   display: function(layer, content, params){
     if(layer==model.constants.LAYER.DESKTOP){
