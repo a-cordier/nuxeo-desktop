@@ -9,6 +9,9 @@
  		LAYER: {
  			DESKTOP: 0,
  			WINDOW: 1
+ 		},
+ 		APP: {
+ 			EXPLORER: 0
  		}
  	},
  	/* Root document is used to init desktop */

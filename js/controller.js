@@ -20,7 +20,7 @@ var controller = {
 			then(model.getChildren).
 			then(model.getContent).
 			then(function(content){
-				view.display(model.constants.LAYER.DESKTOP, content);
+				view.display(model.constants.LAYER.DESKTOP, null, {'content': content});
 			});
 	},
 	handleFolderishDoubleClick: function(event){
@@ -28,7 +28,12 @@ var controller = {
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
-				view.display(model.constants.LAYER.WINDOW, content, {windowId:event.data.windowId});
+				view.display(
+					model.constants.LAYER.WINDOW, 
+					model.constants.APP.EXPLORER, 
+					{'content': content, 
+					 'targetWindowId':event.data.windowId
+					});
 			});
 	},
 	handleBlobishDoubleClick: function(event){
