@@ -4,7 +4,8 @@ var view = {
       controller.authenticate($('input[type="text"]').val(), 
         $('input[type="password"]').val());
     });
-
+    $('#loginModal').css(
+      {'height':$(window).height()*0.75, 'top':'25%'});
     $('#loginModal').modal({'backdrop':false});
   },
   display: function(layer, content, params){
