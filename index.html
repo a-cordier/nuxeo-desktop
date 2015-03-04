@@ -16,11 +16,11 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.js"></script>
 	<script type="text/javascript" src="lib/jquery.dialogextend.min.js"></script>
-	<script type="text/javascript" src="lib/jquery.modal.min.js"></script>
+	<!--<script type="text/javascript" src="lib/jquery.modal.min.js"></script>-->
 	<script type="text/javascript" src="lib/jquery.base64.js"></script>
 	<script type="text/javascript" src="lib/jquery.cookie.js"></script>
 	<!-- BOOTSTRAP JS -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="lib/bootstrap.min.js"></script>
 	<!--APP-->
 	<script type="text/javascript" src="js/model.js"></script>
 	<script type="text/javascript" src="js/controller.js"></script>
@@ -29,22 +29,33 @@
 </head>
 <body>
 	<script>$(function(){controller.init();});</script><!--entry point-->
-	
-	<div id='desktop'></div>
-
-	<form action="" class="login-form" id="ex2" style="display:none;">
-		<h3>Please login</h3>
-		<p><label>Username:</label><input type="text" /></p>
-		<p><label>Password:</label><input type="password" /></p>
-		<p><input id="credentialSubmit" type="submit" value="Login" /></p>
-	</form>
-	<footer id='menuBar'>
-		<div class="btn-group dropup">
-		<button class="btn btn-large dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span></button>
-		 <ul class="dropdown-menu">
-			<li>hello</li>
-  </ul>
-	</footer>
-</nav>
+	<div class="container">
+		<div id='desktop'></div>
+		<div class="modal modal-lg fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="loginModalLabel">Please Log In</h4>
+					</div>
+					<div class="modal-body">
+						<p><label>Username:</label><input type="text" /></p>
+						<p><label>Password:</label><input type="password" /></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal" id="loginButton">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer id='menuBar'>
+			<div class="btn-group dropup">
+				<button class="btn btn-large dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-large"></span></button>
+			</div>
+			<ul class="dropdown-menu">
+				<li>Log out</li>
+			</ul>
+		</footer>
+	</div>
 </body>
 </html>
