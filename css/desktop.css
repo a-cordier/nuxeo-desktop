@@ -5,7 +5,9 @@ body {
   background-position: center;
 } 
 
-.ui-icon-circle-plus{ background-image: url("../img/Folder-32.png"); }
+.override-circle-close{
+  background-image: url("../img/Folder-32.png");
+}
 
 .icon-big{
   height: 32px;

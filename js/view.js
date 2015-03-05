@@ -44,7 +44,15 @@ var view = {
       view.feedTable(table, _data.content);
     }, {'id': data.content.parentUid, 'title': data.content.parentTitle, 'content': data.content});
    }else {
-    view.updateWindow(content ,data.targetWindowId);
+    view.updateWindow_(function(_data){
+      var windowSelector = '#'+_data.targetWindowId;
+      var children = _data.content.children;
+      $(windowSelector+' tr').remove();
+      var table = $(windowSelector+' table');
+      view.feedTable(table,  _data.content);
+      $(windowSelector).attr('id', _data.content.parentUid);
+      $(windowSelector).attr('title', _data.content.title);
+    }, {'targetWindowId': data.targetWindowId, 'content': data.content});
   }
 },
 createWindow: function(callback, data){
@@ -55,21 +63,36 @@ createWindow: function(callback, data){
     attr('id', data.id).
     addClass('dialog_window'));
   callback(data);
-  $('#'+data.id).dialog({'width':560,'height':375}).
+  $('#'+data.id).dialog(
+    {'width':560,
+    'height':375,
+     close: function(event, ui) { 
+      $(this).dialog('destroy').remove(); 
+     },
+     open: function(event, ui){
+      $(".ui-dialog-titlebar-close span")
+          .removeClass('ui-icon').addClass('ui-icon-red ui-icon-closethick');
+     }
+    } 
+  ).
   dialogExtend({
-    "closable" : true,
-        "maximizable" : true, // enable/disable maximize button
-        "minimizable" : false, // enable/disable minimize button
-        "collapsable" : true, // enable/disable collapse button
-        "dblclick" : "collapse", // set action on double click.
-        "icons" : { // jQuery UI icon class
-          "close" : "ui-icon-circle-plus",
-          "maximize" : "ui-icon-circle-plus",
-          "minimize" : "ui-icon-circle-minus",
-          "collapse" : "ui-icon-triangle-1-s",
+      'closable' : true,
+      'maximizable' : true, // enable/disable maximize button
+      'minimizable' : false, // enable/disable minimize button
+      'collapsable' : true, // enable/disable collapse button
+      'dblclick' : 'collapse', // set action on double click.
+      "icons" : {
+          "close" : "ui-icon-closethick",
+          "maximize" : "ui-icon-plusthick",
+          "collapse" : "ui-icon-minusthick",
           "restore" : "ui-icon-bullet"
-        },
-      });
+      },
+      'events': {}
+      }
+  );
+},
+updateWindow_: function(callback, data){
+  callback(data);
 },
 updateWindow: function(content, windowId){
   var children = content.children;
@@ -83,12 +106,16 @@ feedTable: function(table, content){
   var children = content.children;
   for(var i in children){
     var child = children[i];
+    if(child['dc:created']) 
+      var dcCreated = child['dc:created'].substring(0,10);
+    if(child.lastModified) 
+      var dcModified = child.lastModified.substring(0,10);
     if(controller.isFolderish(child)){
       var row = view.newRow(table, 
         ['<div class="glyphicon glyphicon-folder-close"/>', 
         child.title, 
-        child.lastModified, 
-        child.properties['dc:created'], 'Folder']);
+        dcModified, 
+        dcCreated, 'Folder']);
       row.dblclick(
         {doc: child, windowId: content.parentUid}, 
         controller.handleFolderishDoubleClick);
@@ -96,8 +123,8 @@ feedTable: function(table, content){
       var row = view.newRow(table, 
         ['<div class="glyphicon glyphicon-file"/>', 
         child.title, 
-        child.lastModified, 
-        child['dc:created'], 'File']);
+        dcModified, 
+        dcCreated, 'File']);
       row.dblclick(
         {doc: child}, 
         controller.handleBlobishDoubleClick);
