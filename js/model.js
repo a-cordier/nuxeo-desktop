@@ -81,8 +81,7 @@
  				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username+':'+password));
  			},
  			error: function (xhr, ajaxOptions, thrownError) {
-        		alert(xhr.status);
-        		alert(thrownError);
+ 				//TODO feedback to user
      		 }
     	});
  	},
