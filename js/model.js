@@ -19,10 +19,7 @@
  		return $.ajax({
  			url: '/nuxeo/api/v1/path/default-domain/UserWorkspaces/' + username,
  			type: 'GET',
- 			dataType: 'json',
- 			beforeSend: function(xhr){
- 				model.setCredentials(xhr);
- 			}
+ 			dataType: 'json'
  		});    	
  	},
  	/* self explanatory */
@@ -31,10 +28,6 @@
  			url: ['/nuxeo/api/v1/id/',doc.uid,'/@children'].join(''),
  			type: 'GET',
  			dataType: 'json',
- 			beforeSend: function(xhr){
- 				model.setCredentials(xhr);
- 				xhr.setRequestHeader('X-NXDocumentProperties','*');
- 			},
  			success: function(data){
  				data.parentUid = doc.uid;
  				data.parentTitle = doc.title;
@@ -77,7 +70,29 @@
  	getDocumentById: function (id){
  		
  	},
- 	setCredentials: function(xhr){
- 		xhr.setRequestHeader('Authorization', $.cookie('nx-auth'));
- 	}
+ 	getToken: function(username, password){
+ 		return $.ajax({
+          	type: "GET",
+          	dataType: 'text',
+          	url: '/nuxeo/authentication/token?applicationName=Nuxeo%20Desktop&deviceId=' +
+          	model.guid() +
+          	'&deviceDescription=Nuxeo%20desktop&permission=rw',
+ 			beforeSend: function(xhr){
+ 				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username+':'+password));
+ 			},
+ 			error: function (xhr, ajaxOptions, thrownError) {
+        		alert(xhr.status);
+        		alert(thrownError);
+     		 }
+    	});
+ 	},
+ 	guid: function() {
+  		function s4() {
+    		return Math.floor((1 + Math.random()) * 0x10000)
+      		.toString(16)
+      		.substring(1);
+  		}
+  		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    		s4() + '-' + s4() + s4() + s4();
+	}
 }

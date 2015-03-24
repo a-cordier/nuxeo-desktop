@@ -1,22 +1,31 @@
 var controller = {
 	init: function(){
-		/* TODO: Authentication Logic : Ask for 
-				login if not authenticated else display desktop */
-		if(!$.cookie('nx-auth')){
-			view.login();
-		}else{
-			this.initDesktop();
-		}	
+		$.ajaxSetup({
+			statusCode: {
+				401: function(){
+					view.login();
+				}
+			}
+		});
+		view.login(); 				
 	},
 	authenticate: function(username, password){
-		/* MOCK // TODO: Authentication logic and security based on session id */
-		$.cookie('nx-auth', 'Basic ' + $.base64.encode(username + ':' + password));
-		$.cookie('nx-user', username);
-		this.init();
+		model.getToken(username, password).
+		then(function(response){
+			$.ajaxSetup({
+				beforeSend: function(xhr){
+					xhr.setRequestHeader('X-Authentication-Token', response);
+					/* TODO : X-NXDocumentProperties header should
+					be set on demand to save bandwith */
+					xhr.setRequestHeader('X-NXDocumentProperties','*');
+				}
+			});
+			controller.initDesktop(username);
+		});
 	},
-	initDesktop: function(){
+	initDesktop: function(username){
 		/* get user workspace data from model and ask view to display desktop */
-		model.getRoot($.cookie('nx-user')).
+		model.getRoot(username).
 			then(model.getChildren).
 			then(model.getContent).
 			then(function(content){

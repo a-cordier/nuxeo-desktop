@@ -14,10 +14,10 @@ var view = {
     }else if(layer===model.constants.LAYER.WINDOW){
       switch(app){
         case model.constants.APP.EXPLORER:
-          view.displayExplorerWindow(data);
-          break;
+        view.displayExplorerWindow(data);
+        break;
         default:
-          break;
+        break;
       }
     }
   },
@@ -66,30 +66,30 @@ createWindow: function(callback, data){
   $('#'+data.id).dialog(
     {'width':560,
     'height':375,
-     close: function(event, ui) { 
+    close: function(event, ui) { 
       $(this).dialog('destroy').remove(); 
-     },
-     open: function(event, ui){
+    },
+    open: function(event, ui){
       $(".ui-dialog-titlebar-close span")
-          .removeClass('ui-icon').addClass('ui-icon-red ui-icon-closethick');
-     }
-    } 
+      .removeClass().addClass('ui-icon-red');
+    }
+  } 
   ).
   dialogExtend({
-      'closable' : true,
+    'closable' : true,
       'maximizable' : true, // enable/disable maximize button
       'minimizable' : false, // enable/disable minimize button
       'collapsable' : true, // enable/disable collapse button
       'dblclick' : 'collapse', // set action on double click.
       "icons" : {
-          "close" : "ui-icon-closethick",
-          "maximize" : "ui-icon-plusthick",
-          "collapse" : "ui-icon-minusthick",
-          "restore" : "ui-icon-bullet"
+        "close" : "ui-icon-red",
+        "maximize" : "ui-icon-plusthick",
+        "collapse" : "ui-icon-minusthick",
+        "restore" : "ui-icon-bullet"
       },
       'events': {}
-      }
-  );
+    }
+    );
 },
 updateWindow_: function(callback, data){
   callback(data);
@@ -106,44 +106,44 @@ feedTable: function(table, content){
   var children = content.children;
   for(var i in children){
     var child = children[i];
-    if(child['dc:created']) 
-      var dcCreated = child['dc:created'].substring(0,10);
-    if(child.lastModified) 
-      var dcModified = child.lastModified.substring(0,10);
+    var dcCreated = child['dc:created'];
+    var dcModified = child.lastModified;
+    if(dcCreated) { 
+      dcCreated.substring(0,10);
+    }
+    if(dcModified) {
+      dcModified.substring(0,10);
+    }
+    var columns = [child.title, dcModified, dcCreated];
     if(controller.isFolderish(child)){
-      var row = view.newRow(table, 
-        ['<div class="glyphicon glyphicon-folder-close"/>', 
-        child.title, 
-        dcModified, 
-        dcCreated, 'Folder']);
-      row.dblclick(
+      columns.unshift('<div class="glyphicon glyphicon-folder-close"/>');
+      columns.push('Folder');
+      view.newRow(table, columns)
+      .dblclick(
         {doc: child, windowId: content.parentUid}, 
         controller.handleFolderishDoubleClick);
     }else{
-      var row = view.newRow(table, 
-        ['<div class="glyphicon glyphicon-file"/>', 
-        child.title, 
-        dcModified, 
-        dcCreated, 'File']);
-      row.dblclick(
+      columns.unshift('<div class="glyphicon glyphicon-file"/>');
+      columns.push('File');
+      view.newRow(table, columns)
+      .dblclick(
         {doc: child}, 
         controller.handleBlobishDoubleClick);
     }
   }
 },
   newRow: function(table, cols){ // add table row
-    var tr = $('<tr>');
+    var row = $('<tr>');
     for(var i in cols){
-      tr.append($('<td>').html(cols[i]));
+      row.append($('<td>').html(cols[i]));
     }
-    table.append(tr);
-    return tr;
+    table.append(row);
+    return row;
   },    
-  head: function(table, headers){ // add table header
-    var tr = table.append($('<thead>').append('<tr>'));
-    console.log(tr.html());
-    for(var i in headers){
-      tr.append($('<th>').html(headers[i]));
+  head: function(table, cells){ // add table header
+    var header = table.append($('<thead>').append('<tr>'));
+    for(var i in cells){
+      header.append($('<th>').html(cells[i]));
     }
     table.append($('<tbody>'));
   },
