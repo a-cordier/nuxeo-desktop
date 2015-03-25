@@ -57,6 +57,7 @@ var view = {
 },
 createWindow: function(callback, data){
   /* Create and fill window */
+  if($('#'+data.id))$('#'+data.id).dialog('destroy').remove();
   $('body').append(
     $('<div>').
     attr('title', data.title).
@@ -68,10 +69,6 @@ createWindow: function(callback, data){
     'height':375,
     close: function(event, ui) { 
       $(this).dialog('destroy').remove(); 
-    },
-    open: function(event, ui){
-      $(".ui-dialog-titlebar-close span")
-      .removeClass().addClass('ui-icon-red');
     }
   } 
   ).
@@ -82,7 +79,7 @@ createWindow: function(callback, data){
       'collapsable' : true, // enable/disable collapse button
       'dblclick' : 'collapse', // set action on double click.
       "icons" : {
-        "close" : "ui-icon-red",
+        "close" : "ui-icon-closethick",
         "maximize" : "ui-icon-plusthick",
         "collapse" : "ui-icon-minusthick",
         "restore" : "ui-icon-bullet"
