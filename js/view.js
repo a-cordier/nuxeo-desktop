@@ -79,14 +79,24 @@ createWindow: function(callback, data){
       'collapsable' : true, // enable/disable collapse button
       'dblclick' : 'collapse', // set action on double click.
       "icons" : {
-        "close" : "ui-icon-closethick",
-        "maximize" : "ui-icon-plusthick",
-        "collapse" : "ui-icon-minusthick",
-        "restore" : "ui-icon-bullet"
+        "close" : "close custom",
+        "maximize" : "plus custom",
+        "collapse" : "minus custom",
+        "restore" : "plus custom"
       },
-      'events': {}
+      'events': {
+        "load": function(event,dialog){
+        }
+      }
     }
     );
+    $('a').removeClass('ui-state-default');
+    $('.ui-dialog-titlebar-close,.close').css(
+      {
+        'opacity': 1,
+        'margin-top': 0
+      });
+    //$('').css('opacity',1);
 },
 updateWindow_: function(callback, data){
   callback(data);

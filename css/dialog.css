@@ -1,5 +1,18 @@
-.ui-icon.close-red {
-    background-image: url(images/dialog-close.png);
-    width: 20px;
-    height: 20px; 
+.ui-icon.close.custom {
+    background-image: url(custom-theme/images/close-dialog.png);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+}
+
+.ui-icon.minus.custom {
+    background-image: url(custom-theme/images/minimize-dialog.png);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+}
+
+.ui-icon.plus.custom {
+    background-image: url(custom-theme/images/maximize-dialog.png);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    opacity: 1.0;
 }
