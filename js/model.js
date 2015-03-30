@@ -104,7 +104,7 @@
         return false;
       }
       return this.memory[key];
-    }
+    },
     set: function(key, value){
       this.memory[key] = value;
     },

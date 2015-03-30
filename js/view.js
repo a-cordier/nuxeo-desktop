@@ -55,8 +55,13 @@ var view = {
       $(windowSelector+' tr').remove();
       var table = $(windowSelector+' table');
       view.feedTable(table,  _data.content);
-      $(windowSelector).attr('id', _data.content.parentUid);
-      $('#'+_data.content.parentUid).dialog("option", "title", _data.title);
+      var id = _data.content.parentUid;
+      var i=1;
+      while($('#'+id).length){
+        id += '_'+i;
+      }
+      $(windowSelector).attr('id', id);
+      $('#'+id).dialog("option", "title", _data.title);
     }, {'targetWindowId': data.targetWindowId, 'title': data.content.parentTitle, 'content': data.content});
   }
 },
