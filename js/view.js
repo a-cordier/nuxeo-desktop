@@ -105,13 +105,13 @@ feedTable: function(table, content){
   var children = content.children;
   for(var i in children){
     var child = children[i];
-    var dcCreated = child['dc:created'];
-    var dcModified = child.lastModified;
+    var dcCreated = child.properties['dc:created'];
+    var dcModified = child.properties['dc:modified'];
     if(dcCreated) { 
-      dcCreated.substring(0,10);
+      dcCreated = dcCreated.substring(0,10);
     }
     if(dcModified) {
-      dcModified.substring(0,10);
+      dcModified = dcModified.substring(0,10);
     }
     var columns = [child.title, dcModified, dcCreated];
     if(controller.isFolderish(child)){
