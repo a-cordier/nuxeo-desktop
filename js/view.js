@@ -44,15 +44,15 @@ var view = {
       view.feedTable(table, _data.content);
     }, {'id': data.content.parentUid, 'title': data.content.parentTitle, 'content': data.content});
    }else {
-    view.updateWindow_(function(_data){
+    view.updateWindow(function(_data){
       var windowSelector = '#'+_data.targetWindowId;
       var children = _data.content.children;
       $(windowSelector+' tr').remove();
       var table = $(windowSelector+' table');
       view.feedTable(table,  _data.content);
       $(windowSelector).attr('id', _data.content.parentUid);
-      $(windowSelector).attr('title', _data.content.title);
-    }, {'targetWindowId': data.targetWindowId, 'content': data.content});
+      $('#'+_data.content.parentUid).dialog("option", "title", _data.title);
+    }, {'targetWindowId': data.targetWindowId, 'title': data.content.parentTitle, 'content': data.content});
   }
 },
 createWindow: function(callback, data){
@@ -98,16 +98,8 @@ createWindow: function(callback, data){
       });
     //$('').css('opacity',1);
 },
-updateWindow_: function(callback, data){
+updateWindow: function(callback, data){
   callback(data);
-},
-updateWindow: function(content, windowId){
-  var children = content.children;
-  var targetWindow = $('#'+windowId);
-  $('#'+windowId+' tr').remove();
-  var table = $('#'+windowId+' table');
-  view.feedTable(table, content);
-  targetWindow.attr("id", content.parentUid);
 },
 feedTable: function(table, content){
   var children = content.children;

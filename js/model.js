@@ -46,7 +46,6 @@
  	getPdfPreview: function (doc, callback){
  		var xhr = new XMLHttpRequest();
  		xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content/@op/Blob.ToPDF'].join(''), true);
- 		model.setCredentials(xhr);
  		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
  		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
  		xhr.overrideMimeType('application/pdf');
@@ -66,7 +65,7 @@
  		xhr.onload = callback;
  		xhr.send(JSON.stringify({'params':{}}));
  	},
- 	/* get blob as stream */
+ 	/* TODO get blob as stream */
  	getDocumentById: function (id){
  		
  	},
