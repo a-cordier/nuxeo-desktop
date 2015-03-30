@@ -28,11 +28,16 @@ var view = {
       var iconPlaceHolder = $('<li></li>').appendTo($('#desktopIcons'));
       if(controller.isFolderish(children[i])){
         iconPlaceHolder.append($('<div></div>').addClass('icon-big folder-collapsed-icon'));
-        iconPlaceHolder.append($('<div></div>').addClass('icon-caption').text(this.cropTitle(children[i].title)));
         iconPlaceHolder.dblclick(
           {doc: children[i]}, controller.handleFolderishDoubleClick);
-        iconPlaceHolder.draggable();
+      } else {
+        iconPlaceHolder.append($('<div></div>').addClass('icon-big file-blank-icon'));
+        iconPlaceHolder.dblclick(
+          {doc: children[i]}, controller.handleBlobishDoubleClick);
+        
       }
+      iconPlaceHolder.append($('<div></div>').addClass('icon-caption').text(this.cropTitle(children[i].title)));
+      iconPlaceHolder.draggable();
     }
   },
   displayExplorerWindow: function(data) {

@@ -92,5 +92,29 @@
   		}
   		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     		s4() + '-' + s4() + s4() + s4();
-	}
+	},
+  cache: {
+    init: function(){
+      if(typeof(this.memory) === 'undefined'){
+        this.memory = {};
+      }
+    },
+    get: function(key){
+      if(!this.hasKey(key)){
+        return false;
+      }
+      return this.memory[key];
+    }
+    set: function(key, value){
+      this.memory[key] = value;
+    },
+    delete: function(key){
+      if(this.hasKey(key)){
+        delete cache[key];
+      }
+    },
+    hasKey: function(key){
+      return typeof(this.memory[key]) !== 'undefined';
+    }
+  }
 }
