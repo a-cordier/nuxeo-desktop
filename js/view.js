@@ -51,7 +51,7 @@ var view = {
    }else {
     view.updateWindow(function(_data){
       var windowSelector = '#'+_data.targetWindowId;
-      var children = _data.content.children;
+      //var children = _data.content.children;
       $(windowSelector+' tr').remove();
       var table = $(windowSelector+' table');
       view.feedTable(table,  _data.content);
@@ -62,10 +62,10 @@ var view = {
       }
       $(windowSelector).attr('id', id);
       windowSelector = '#'+id;
-      $(windowSelector).dialog("option", "title", _data.title);
+      $(windowSelector).dialog("option", "title", _data.content.parentTitle);
       controller.saveToCache($(windowSelector), _data); // un cran trop bas
       view.showNavBar($(windowSelector));
-    }, {'targetWindowId': data.targetWindowId, 'title': data.content.parentTitle, 'content': data.content});
+    }, {'targetWindowId': data.targetWindowId, 'content': data.content});
   }
 },
 createWindow: function(callback, data){
