@@ -61,7 +61,10 @@ var view = {
         id += '_'+i;
       }
       $(windowSelector).attr('id', id);
-      $('#'+id).dialog("option", "title", _data.title);
+      windowSelector = '#'+id;
+      $(windowSelector).dialog("option", "title", _data.title);
+      controller.saveToCache($(windowSelector), _data); // un cran trop bas
+      view.showNavBar($(windowSelector));
     }, {'targetWindowId': data.targetWindowId, 'title': data.content.parentTitle, 'content': data.content});
   }
 },
@@ -106,13 +109,20 @@ createWindow: function(callback, data){
         'opacity': 1,
         'margin-top': 0
       });
+    $('.ui-dialog-titlebar').addClass('custom');
+
     //$('').css('opacity',1);
 },
 updateWindow: function(callback, data){
   callback(data);
 },
 showNavBar: function(dialog){
-
+  var navBar = $('<div>').addClass('nav-bar').insertAfter(dialog.siblings('.ui-dialog-titlebar'));
+  var backBtn = $('<span>').addClass('ui-icon back custom').appendTo(navBar);
+  backBtn.click(function(event) {
+    controller.navigateBackward(dialog);
+  });
+  navBar.append(backBtn);
 },
 feedTable: function(table, content){
   var children = content.children;

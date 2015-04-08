@@ -1,5 +1,6 @@
 var controller = {
 	init: function(){
+		model.cache.init();
 		$.ajaxSetup({
 			statusCode: {
 				401: function(){
@@ -41,9 +42,10 @@ var controller = {
 					model.constants.LAYER.WINDOW, 
 					model.constants.APP.EXPLORER, 
 					{'content': content, 
-					 'targetWindowId':event.data.windowId
+					 'targetWindowId': event.data.windowId
 					});
 			});
+
 	},
 	handleBlobishDoubleClick: function(event){
 		/* if document is file-like then display a pdf preview*/
@@ -53,6 +55,22 @@ var controller = {
        			window.open(fileURL);
  			}
 		});		
+	},
+	saveToCache: function(dialog, data){
+		/* feed cache to allow preview / next navigation */
+		var key = dialog.attr('id');
+		var memory = model.cache.get(key)||[];
+		memory.push(data);
+		model.cache.set(key, memory);
+		alert(JSON.stringify(model.cache));
+
+	},
+	navigateBackward: function(dialog){
+		var data = model.cache.get(dialog.attr('id'));
+		var lastItem = data.pop();
+		if(lastItem){
+			// Afficher
+		}
 	},
 	isFolderish: function(doc){
 		return doc.facets.indexOf('Folderish') > -1;

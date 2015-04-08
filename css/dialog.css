@@ -17,6 +17,22 @@
     opacity: 1.0;
 }
 
+.nav-bar {
+  border: none;
+}
+
+.ui-icon.back.custom {
+    background-image: url(custom-theme/images/back.png);
+    background-size: 15px 15px;
+    margin-left: 15px;
+    background-repeat: no-repeat;
+    opacity: 1.0;
+}
+
 .ui-dialog .ui-dialog-title {
   padding:0px;
+}
+
+.ui-dialog-titlebar.custom {
+  border-bottom: 0px !important;
 }
