@@ -41,31 +41,30 @@ var view = {
     }
   },
   displayExplorerWindow: function(data) {
-    if(!data.targetWindowId) { 
+    if(!data.dialogId) { 
      view.createWindow(function(_data){
       var table = $('<table>'); 
       $('#'+_data.id).append(table);
       view.head(table, ['', 'Title', 'Modified', 'Created', 'Type']);
       view.feedTable(table, _data.content);
-    }, {'id': data.content.parentUid, 'title': data.content.parentTitle, 'content': data.content});
+    }, {'id': data.content.uid, 'title': data.content['title'], 'content': data.content});
    }else {
     view.updateWindow(function(_data){
-      var windowSelector = '#'+_data.targetWindowId;
+      var windowSelector = '#'+_data.dialogId;
       //var children = _data.content.children;
       $(windowSelector+' tr').remove();
       var table = $(windowSelector+' table');
       view.feedTable(table,  _data.content);
-      var id = _data.content.parentUid;
-      var i=1;
+      var id = _data.content.uid;      
       while($('#'+id).length){
-        id += '_'+i;
-      }
+        id += '1';
+      }/* change id in case a window is still there with the same content*/
       $(windowSelector).attr('id', id);
       windowSelector = '#'+id;
-      $(windowSelector).dialog("option", "title", _data.content.parentTitle);
+      $(windowSelector).dialog("option", "title", _data.content['title']);
       controller.saveToCache($(windowSelector), _data); // un cran trop bas
       view.showNavBar($(windowSelector));
-    }, {'targetWindowId': data.targetWindowId, 'content': data.content});
+    }, {'dialogId': data.dialogId, 'content': data.content});
   }
 },
 createWindow: function(callback, data){
@@ -142,7 +141,7 @@ feedTable: function(table, content){
       columns.push('Folder');
       view.newRow(table, columns)
       .dblclick(
-        {doc: child, windowId: content.parentUid}, 
+        {doc: child, dialogId: content.uid}, 
         controller.handleFolderishDoubleClick);
     }else{
       columns.unshift('<div class="glyphicon glyphicon-file"/>');

@@ -29,17 +29,17 @@
  			type: 'GET',
  			dataType: 'json',
  			success: function(data){
- 				data.parentUid = doc.uid;
- 				data.parentTitle = doc.title;
+ 				data.uid = doc.uid;
+ 				data['title'] = doc.title;
  			}
  		});	
  	},
  	/* get result of the getChildren operation and add a ref to parent */
- 	getContent: function(nuxeoResponse){
+ 	getContent: function(data){
  		return {
- 			parentUid: nuxeoResponse.parentUid,
- 			parentTitle: nuxeoResponse.parentTitle,
- 			children: nuxeoResponse.entries
+ 			uid: data.uid,
+ 			title: data['title'],
+ 			children: data.entries
  		};
  	},
  	/* convert a blob holder as a pdf and get result as stream */

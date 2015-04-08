@@ -33,7 +33,7 @@ var controller = {
 				view.display(model.constants.LAYER.DESKTOP, null, {'content': content});
 			});
 	},
-	handleFolderishDoubleClick: function(event){
+	handleFolderishDoubleClick: function(event){ // TODO rename to openFolder
 		/* if document is folderish then display its content in a window */
 		model.getChildren(event.data.doc).
 			then(model.getContent).
@@ -42,12 +42,11 @@ var controller = {
 					model.constants.LAYER.WINDOW, 
 					model.constants.APP.EXPLORER, 
 					{'content': content, 
-					 'targetWindowId': event.data.windowId
+					 'dialogId': event.data.dialogId,				 
 					});
 			});
-
 	},
-	handleBlobishDoubleClick: function(event){
+	handleBlobishDoubleClick: function(event){ // TODO rename to openFile
 		/* if document is file-like then display a pdf preview*/
 		model.getBlob(event.data.doc, function(){
 			if(this.status == 200){
@@ -62,8 +61,7 @@ var controller = {
 		var memory = model.cache.get(key)||[];
 		memory.push(data);
 		model.cache.set(key, memory);
-		alert(JSON.stringify(model.cache));
-
+		//alert(JSON.stringify(model.cache));
 	},
 	navigateBackward: function(dialog){
 		var data = model.cache.get(dialog.attr('id'));
