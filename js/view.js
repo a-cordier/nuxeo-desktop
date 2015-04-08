@@ -111,6 +111,9 @@ createWindow: function(callback, data){
 updateWindow: function(callback, data){
   callback(data);
 },
+showNavBar: function(dialog){
+
+},
 feedTable: function(table, content){
   var children = content.children;
   for(var i in children){

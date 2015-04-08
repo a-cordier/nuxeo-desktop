@@ -47,7 +47,7 @@ var controller = {
 	},
 	handleBlobishDoubleClick: function(event){
 		/* if document is file-like then display a pdf preview*/
-		model.getPdfPreview(event.data.doc, function(){
+		model.getBlob(event.data.doc, function(){
 			if(this.status == 200){
  				var fileURL = URL.createObjectURL(this.response);
        			window.open(fileURL);

@@ -56,8 +56,7 @@
  	/* get blob from blob as stream */
  	getBlob: function (doc, callback){
  		var xhr = new XMLHttpRequest();
- 		xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@op/Blob.Get'].join(''), true);
-		model.setCredentials(xhr); 		
+ 		xhr.open('GET', ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content'].join(''), true);	
 		xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
  		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
  		xhr.overrideMimeType(doc.properties['file:content']['mime-type']);
