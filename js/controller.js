@@ -15,7 +15,7 @@ var controller = {
 		then(function(response){
 			$.ajaxSetup({
 				beforeSend: function(xhr){
-					xhr.setRequestHeader('X-Authentication-Token', response);
+					///xhr.setRequestHeader('X-Authentication-Token', response);
 					/* TODO : X-NXDocumentProperties header should
 					be set on demand to save bandwith */
 					xhr.setRequestHeader('X-NXDocumentProperties','*');
@@ -33,20 +33,26 @@ var controller = {
 				view.display(model.constants.LAYER.DESKTOP, null, {'content': content});
 			});
 	},
-	handleFolderishDoubleClick: function(event){ // TODO rename to openFolder
+	openFolder: function(event){ // TODO rename to openFolder
 		/* if document is folderish then display its content in a window */
+		var dialogId = event.data.dialogId;
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
-				view.display(
+				var id = view.display(
 					model.constants.LAYER.WINDOW, 
 					model.constants.APP.EXPLORER, 
 					{'content': content, 
 					 'dialogId': event.data.dialogId,				 
 					});
+				// saving document to cache to allow prev./next navigation
+				if(!event.data.bypass){
+					controller.saveToCache(id, event.data.doc);
+				} 
 			});
+			view.updateNavBar($(dialogId));
 	},
-	handleBlobishDoubleClick: function(event){ // TODO rename to openFile
+	openFile: function(event){ // TODO rename to openFile
 		/* if document is file-like then display a pdf preview*/
 		model.getBlob(event.data.doc, function(){
 			if(this.status == 200){
@@ -55,20 +61,44 @@ var controller = {
  			}
 		});		
 	},
-	saveToCache: function(dialog, data){
+	saveToCache: function(key, data){
 		/* feed cache to allow preview / next navigation */
-		var key = dialog.attr('id');
-		var memory = model.cache.get(key)||[];
-		memory.push(data);
-		model.cache.set(key, memory);
-		//alert(JSON.stringify(model.cache));
+		var history = model.cache.get(key)||{cursor:-1, data:[]};
+		history.data.push(data);
+		history.cursor++;
+		window.console.log("saving to cache - cursor: " + history.cursor);
+		model.cache.set(key, history);	
 	},
 	navigateBackward: function(dialog){
-		var data = model.cache.get(dialog.attr('id'));
-		var lastItem = data.pop();
-		if(lastItem){
-			// Afficher
+		var id = dialog.attr('id');
+		var history = model.cache.get(id);
+		var item = history.data[--history.cursor];
+		if(item){
+			controller.openFolder({
+				data:{
+					doc: item,
+					dialogId: dialog.attr('id'),
+					bypass: true
+				}
+			});
 		}
+		history.cursor--;
+		view.updateNavBar(dialog);
+	},
+	navigateForward: function(dialog){
+		var id = dialog.attr('id');
+		var history = model.cache.get(id);
+		var item = history.data[++history.cursor];
+		if(item){
+			controller.openFolder({
+				data:{
+					doc: item,
+					dialogId: dialog.attr('id'),
+					bypass: true
+				}
+			});
+		}
+		view.updateNavBar(dialog);
 	},
 	isFolderish: function(doc){
 		return doc.facets.indexOf('Folderish') > -1;

@@ -84,6 +84,7 @@
     	});
  	},
  	guid: function() {
+
   		function s4() {
     		return Math.floor((1 + Math.random()) * 0x10000)
       		.toString(16)
@@ -109,7 +110,7 @@
     },
     delete: function(key){
       if(this.hasKey(key)){
-        delete cache[key];
+        delete this.memory[key];
       }
     },
     hasKey: function(key){
