@@ -36,6 +36,7 @@ var controller = {
 	openFolder: function(event){ // TODO rename to openFolder
 		/* if document is folderish then display its content in a window */
 		var dialogId = event.data.dialogId;
+		window.console.log("open folder: " + event.data.dialogId);
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
@@ -48,9 +49,9 @@ var controller = {
 				// saving document to cache to allow prev./next navigation
 				if(!event.data.bypass){
 					controller.saveToCache(id, event.data.doc);
+					view.updateNavBar($('#'+id));
 				} 
 			});
-			view.updateNavBar($(dialogId));
 	},
 	openFile: function(event){ // TODO rename to openFile
 		/* if document is file-like then display a pdf preview*/
@@ -65,7 +66,7 @@ var controller = {
 		/* feed cache to allow preview / next navigation */
 		var history = model.cache.get(key)||{cursor:-1, data:[]};
 		history.data.push(data);
-		history.cursor++;
+		history.cursor++; // keeping a track on the currently opened document
 		window.console.log("saving to cache - cursor: " + history.cursor);
 		model.cache.set(key, history);	
 	},
@@ -73,6 +74,8 @@ var controller = {
 		var id = dialog.attr('id');
 		var history = model.cache.get(id);
 		var item = history.data[--history.cursor];
+		window.console.log("backward: retrived document: " + item.title);
+		window.console.log("backward - cursor: " + history.cursor);
 		if(item){
 			controller.openFolder({
 				data:{
@@ -82,13 +85,15 @@ var controller = {
 				}
 			});
 		}
-		history.cursor--;
 		view.updateNavBar(dialog);
 	},
 	navigateForward: function(dialog){
 		var id = dialog.attr('id');
 		var history = model.cache.get(id);
 		var item = history.data[++history.cursor];
+				window.console.log("forward - cursor: " + history.cursor);
+		window.console.log("forward: retrived document: " + item.title);
+
 		if(item){
 			controller.openFolder({
 				data:{

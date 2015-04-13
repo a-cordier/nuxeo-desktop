@@ -63,7 +63,7 @@ var view = {
       var table = $(windowSelector+' table');
       view.feedTable(table,  _data.content);
       $(windowSelector).dialog("option", "title", _data.content['title']);
-      if(!$(windowSelector) .siblings('.ui-dialog-titlebar').find('.nav-bar').length){
+      if(!$(windowSelector).siblings('.ui-dialog-titlebar').find('.nav-bar').length){
         view.showNavBar($(windowSelector));
       }
     }, {'dialogId': data.dialogId, 'content': data.content});
@@ -133,12 +133,14 @@ createWindow: function(callback, data){
   },
   updateNavBar: function(dialog){
     var history = model.cache.get(dialog.attr('id'));
-    window.console.log(JSON.stringify(history));
+    window.console.log("updateNavBar: " + dialog.attr('id'));
+    window.console.log(JSON.stringify(model.cache));
     var navBar = dialog.siblings('.ui-dialog-titlebar').find('.nav-bar');
-    if(history && history.cursor > -1){
+    if(history && history.cursor > 0){
       if(!navBar.find('.back').length){
          var backBtn = $('<span>').addClass('ui-icon back custom').appendTo(navBar);
          backBtn.click(function(event) {
+          window.console.log('update nav bar click event');
           controller.navigateBackward(dialog);
          });
          navBar.append(backBtn);
@@ -146,6 +148,20 @@ createWindow: function(callback, data){
     } else {
       if(navBar.find('.back').length){
          navBar.find('.back').remove();
+      }
+    } 
+    if(history && history.cursor < history.data.length-1){
+      if(!navBar.find('.next').length){
+         var nextBtn = $('<span>').addClass('ui-icon next custom').appendTo(navBar);
+          nextBtn.click(function(event) {
+          window.console.log('update nav bar click event');
+          controller.navigateBackward(dialog);
+         });
+         navBar.append(nextBtn);
+      }
+    }else {
+      if(navBar.find('.next').length){
+         navBar.find('.next').remove();
       }
     }
   },
