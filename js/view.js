@@ -155,7 +155,7 @@ createWindow: function(callback, data){
          var nextBtn = $('<span>').addClass('ui-icon next custom').appendTo(navBar);
           nextBtn.click(function(event) {
           window.console.log('update nav bar click event');
-          controller.navigateBackward(dialog);
+          controller.navigateForward(dialog);
          });
          navBar.append(nextBtn);
       }
