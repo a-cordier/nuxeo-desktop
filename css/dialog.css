@@ -22,23 +22,39 @@
   margin-bottom: 5px;
   margin-left: 5px;
   display:inline-block;
+  float: left;
 }
 
 .ui-icon.back.custom {
-    background-image: url(custom-theme/images/ui-icons_222222_256x240.png);
-    background-position: -144px -192px;
+    background-image: url(custom-theme/images/back-dialog.png);
+    background-size: 15px 15px;
     background-repeat: no-repeat;
     opacity: 1.0;
     display: inline-block;
+    margin-right: 2px;
+    margin-bottom: 2px;
 }
 
+.ui-icon.back.custom.disabled {
+    opacity: 0.5;
+    cursor: move !important;
+}
+
+.ui-icon.next.custom.disabled {
+    opacity: 0.5;
+    cursor: move !important;
+}
+
+
 .ui-icon.next.custom {
-    background-image: url(custom-theme/images/ui-icons_222222_256x240.png);
-    background-position: -112px -192px;
+    background-image: url(custom-theme/images/next-dialog.png);
+    background-size: 15px 15px;
     background-repeat: no-repeat;
     margin-right: 5px;
     opacity: 1.0;
     display: inline-block;
+    margin-left: 2px;
+    margin-bottom: 2px;
 }
 
 .ui-icon.back.custom:hover {
@@ -52,8 +68,31 @@
 .ui-dialog .ui-dialog-title {
   padding:0px;
 }
+
+.ui-dialog-title {
+    margin-top: 7px  !important;
+    margin-left: 2px;
 }
 
 .ui-dialog-titlebar.custom {
   border-bottom: 0px !important;
+}
+
+.highlighted {
+    color: #261F1D;
+    background-color: #E5C37E !important;
+}
+
+.stacked{
+    display:inline-block;
+    color: #000;
+    background-color: #fff;
+    min-width: 60px;
+    border: solid 2px;
+    border-color: #fff;
+    padding: 2px;
+}
+
+.stacked:hover{
+    cursor: pointer;
 }

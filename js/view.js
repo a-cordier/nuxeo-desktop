@@ -1,4 +1,5 @@
 var view = {
+
   login: function(){
     $('#loginButton').click(function(event) {
       controller.authenticate($('input[type="text"]').val(), 
@@ -114,54 +115,78 @@ createWindow: function(callback, data){
     'margin-top': 0
   });
   $('.ui-dialog-titlebar').addClass('custom');
+  /* Overriding the collapse button behavior to implement 
+  a "send to tray" functionality*/
+  $('a[title="collapse"]').off().click(
+  {
+    dialog: $('#'+id)
+  },function(event){
+    var dialog = event.data.dialog;
+    var widget = event.data.dialog.parents('.ui-widget');
+    var dialogId = event.data.dialog.attr('id');
+    var properties = {
+      width: '60px',
+      height: '30px'
+    };
+    var targetPosition = $('#dialogStack').offset();
+    //targetPosition.top+=10;
+    $.extend(properties, targetPosition);
+    widget.animate(
+      properties,
+      function() {
+      /* stuff to do after animation is complete */
+       $('<div id="'+dialogId+'Stacked">').addClass('stacked').appendTo('#dialogStack');
+       var dialogTitle = dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title').text();
+       $('#'+dialogId+'Stacked').text(dialogTitle); //dialog.find('.ui-dialog-title').text()
+       widget.hide();
+       /* pop from tray */
+       $('#'+dialogId+'Stacked').click(function(){
+         $('#'+dialogId+'Stacked').remove();
+         widget.show();
+         widget.animate({
+            width: '500px', height: '375px', top:0, left: window.width/2-200
+         });
+       });
+  });
+    });
+  view.showNavBar($('#'+id));
+
   },
   updateWindow: function(callback, data){
     callback(data);
   },
   showNavBar: function(dialog){ // Prev. Next Buttons
-    // if(dialog.siblings('.nav-bar').length){ 
-    //   return;
-    // }
-    var navBar = $('<div>').addClass('nav-bar').insertAfter(dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title'));
-   
-    // var nextBtn = $('<span>').addClass('ui-icon next custom').appendTo(navBar);
-    // nextBtn.click(function(event) {
-    //   controller.navigateForward(dialog);
-    // });
-    view.updateNavBar(dialog);
-    //navBar.append(nextBtn);
+   var navBar = $('<div>').addClass('nav-bar').insertBefore(dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title')); 
+   var backBtn = $('<span id="navBackBtn">').addClass('ui-icon back custom disabled').appendTo(navBar);
+   var nextBtn = $('<span id="navForwBtn">').addClass('ui-icon next custom disabled').appendTo(navBar);
+   view.updateNavBar(dialog);
   },
   updateNavBar: function(dialog){
     var history = model.cache.get(dialog.attr('id'));
     window.console.log("updateNavBar: " + dialog.attr('id'));
     window.console.log(JSON.stringify(model.cache));
     var navBar = dialog.siblings('.ui-dialog-titlebar').find('.nav-bar');
+    var backBtn = $('#navBackBtn'), nextBtn = $('#navForwBtn');
     if(history && history.cursor > 0){
-      if(!navBar.find('.back').length){
-         var backBtn = $('<span>').addClass('ui-icon back custom').appendTo(navBar);
-         backBtn.click(function(event) {
-          window.console.log('update nav bar click event');
-          controller.navigateBackward(dialog);
-         });
-         navBar.append(backBtn);
+      if(backBtn.hasClass('disabled')){
+         backBtn.removeClass('disabled');
+         backBtn.bind('click', {'dialog': dialog}, controller.navigateBackward);
       }
     } else {
-      if(navBar.find('.back').length){
-         navBar.find('.back').remove();
+      if(!backBtn.hasClass('disabled')){
+         backBtn.addClass('disabled');
+         backBtn.unbind('click', controller.navigateBackward);
       }
     } 
     if(history && history.cursor < history.data.length-1){
-      if(!navBar.find('.next').length){
-         var nextBtn = $('<span>').addClass('ui-icon next custom').appendTo(navBar);
-          nextBtn.click(function(event) {
-          window.console.log('update nav bar click event');
-          controller.navigateForward(dialog);
-         });
-         navBar.append(nextBtn);
+      if(nextBtn.hasClass('disabled')){
+         nextBtn.removeClass('disabled');
+         nextBtn.bind('click', {'dialog': dialog}, controller.navigateForward);
       }
     }else {
-      if(navBar.find('.next').length){
-         navBar.find('.next').remove();
+      if(!nextBtn.hasClass('disabled')){
+         nextBtn.addClass('disabled');
+         nextBtn.unbind('click', controller.navigateForward);
       }
     }
   },
@@ -178,21 +203,26 @@ createWindow: function(callback, data){
         dcModified = dcModified.substring(0,10);
       }
       var columns = [child.title, dcModified, dcCreated];
+      var row;
       if(controller.isFolderish(child)){
         columns.unshift('<div class="glyphicon glyphicon-folder-close"/>');
         columns.push('Folder');
-        view.newRow(table, columns)
+        row = view.newRow(table, columns)
         .dblclick(
           {doc: child, dialogId: table.parent('div').attr('id')}, 
           controller.openFolder);
       }else{
         columns.unshift('<div class="glyphicon glyphicon-file"/>');
         columns.push('File');
-        view.newRow(table, columns)
+        row = view.newRow(table, columns)
         .dblclick(
           {doc: child}, 
           controller.openFile);
       }
+      row.click(function(){
+        $(this).closest("tr").siblings().removeClass("highlighted");
+        $(this).toggleClass("highlighted");
+      });
     }
   },
   newRow: function(table, cols){ // add table row

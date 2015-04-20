@@ -70,7 +70,8 @@ var controller = {
 		window.console.log("saving to cache - cursor: " + history.cursor);
 		model.cache.set(key, history);	
 	},
-	navigateBackward: function(dialog){
+	navigateBackward: function(event){
+		var dialog = event.data.dialog;
 		var id = dialog.attr('id');
 		var history = model.cache.get(id);
 		var item = history.data[--history.cursor];
@@ -87,13 +88,13 @@ var controller = {
 		}
 		view.updateNavBar(dialog);
 	},
-	navigateForward: function(dialog){
+	navigateForward: function(event){
+		var dialog = event.data.dialog;
 		var id = dialog.attr('id');
 		var history = model.cache.get(id);
 		var item = history.data[++history.cursor];
 				window.console.log("forward - cursor: " + history.cursor);
 		window.console.log("forward: retrived document: " + item.title);
-
 		if(item){
 			controller.openFolder({
 				data:{
