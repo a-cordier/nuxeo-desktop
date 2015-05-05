@@ -47,8 +47,10 @@ var view = {
       to its history */
      var id = data.content.uid;
      while($('#'+id).length){
+      window.console.log(id+ " is allready bound");
       id = model.guid();
      }
+     window.console.log("Effective dialog id: "  + id);
      view.createWindow(function(_data){
       var id = _data.id;
       var table = $('<table>'); 
@@ -156,17 +158,19 @@ createWindow: function(callback, data){
     callback(data);
   },
   showNavBar: function(dialog){ // Prev. Next Buttons
+   var id = dialog.attr('id');
    var navBar = $('<div>').addClass('nav-bar').insertBefore(dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title')); 
-   var backBtn = $('<span id="navBackBtn">').addClass('ui-icon back custom disabled').appendTo(navBar);
-   var nextBtn = $('<span id="navForwBtn">').addClass('ui-icon next custom disabled').appendTo(navBar);
+   var backBtn = $('<span id="navBackBtn-' + id + '">').addClass('ui-icon back custom disabled').appendTo(navBar);
+   var nextBtn = $('<span id="navForwBtn-' + id + '">').addClass('ui-icon next custom disabled').appendTo(navBar);
    view.updateNavBar(dialog);
   },
   updateNavBar: function(dialog){
-    var history = model.cache.get(dialog.attr('id'));
-    window.console.log("updateNavBar: " + dialog.attr('id'));
+    var id = dialog.attr('id');
+    var history = model.cache.get(id);
+    window.console.log("updateNavBar: " + id);
     window.console.log(JSON.stringify(model.cache));
     var navBar = dialog.siblings('.ui-dialog-titlebar').find('.nav-bar');
-    var backBtn = $('#navBackBtn'), nextBtn = $('#navForwBtn');
+    var backBtn = $('#navBackBtn-' + id), nextBtn = $('#navForwBtn-' + id);
     if(history && history.cursor > 0){
       if(backBtn.hasClass('disabled')){
          backBtn.removeClass('disabled');
