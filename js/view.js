@@ -119,7 +119,7 @@ createWindow: function(callback, data){
   $('.ui-dialog-titlebar').addClass('custom');
   /* Overriding the collapse button behavior to implement 
   a "send to tray" functionality*/
-  $('a[title="collapse"]').off().click(
+  $('#'+id).siblings('.ui-dialog-titlebar').find('a[title="collapse"]').off().click(
   {
     dialog: $('#'+id)
   },function(event){
@@ -161,7 +161,7 @@ createWindow: function(callback, data){
    var id = dialog.attr('id');
    var navBar = $('<div>').addClass('nav-bar').insertBefore(dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title')); 
    var backBtn = $('<span id="navBackBtn-' + id + '">').addClass('ui-icon back custom disabled').appendTo(navBar);
-   var nextBtn = $('<span id="navForwBtn-' + id + '">').addClass('ui-icon next custom disabled').appendTo(navBar);
+   var nextBtn = $('<span id="navForwBtn-' + id + ~'">').addClass('ui-icon next custom disabled').appendTo(navBar);
    view.updateNavBar(dialog);
   },
   updateNavBar: function(dialog){
