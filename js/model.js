@@ -69,20 +69,15 @@
  	getDocumentById: function (id){
  		
  	},
- 	getToken: function(username, password){
+ 	getSession: function(username, password){
  		return $.ajax({
-          	type: "GET",
-          	dataType: 'text',
-          	url: '/nuxeo/authentication/token?applicationName=Nuxeo%20Desktop&deviceId=' +
-          	model.guid() +
-          	'&deviceDescription=Nuxeo%20desktop&permission=rw',
- 			beforeSend: function(xhr){
- 				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username+':'+password));
- 			},
- 			error: function (xhr, ajaxOptions, thrownError) {
- 				//TODO feedback to user
-     		 }
-    	});
+       type: "GET",
+       dataType: 'json',
+       url: '/nuxeo/api/v1/path/default-domain/UserWorkspaces/' + username,
+       beforeSend: function(xhr){
+         xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username+':'+password));
+       }
+    });
  	},
  	guid: function() {
 

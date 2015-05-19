@@ -15,21 +15,13 @@ var controller = {
 		}
 	},
 	authenticate: function(username, password){
-		model.getToken(username, password).
+		model.getSession(username, password).
 		then(function(response){
 			controller.initDesktop(username);
 			$.cookie("nxuser", username);
 		});
 	},
 	initDesktop: function(username){
-					$.ajaxSetup({
-				beforeSend: function(xhr){
-					///xhr.setRequestHeader('X-Authentication-Token', response);
-					/* TODO : X-NXDocumentProperties header should
-					be set on demand to save bandwith */
-					xhr.setRequestHeader('X-NXDocumentProperties','*');
-				}
-			});
 		/* get user workspace data from model and ask view to display desktop */
 		model.getRoot(username).
 			then(model.getChildren).
