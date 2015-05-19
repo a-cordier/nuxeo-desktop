@@ -1,19 +1,28 @@
 var controller = {
 	init: function(){
 		model.cache.init();
-		$.ajaxSetup({
-			statusCode: {
-				401: function(){
-					view.login();
-				}
+		$(document).on('ajaxError', function(event, xhr) {
+			if (xhr.status === 401 || xhr.status === 403) {
+				window.console.log(xhr.status + ": please log in");
+				view.login(); 	
 			}
 		});
-		view.login(); 				
+		var nxuser = $.cookie("nxuser");
+		if(typeof nxuser !== "undefined") {
+			controller.initDesktop(nxuser);
+		} else {
+			view.login(); 				
+		}
 	},
 	authenticate: function(username, password){
 		model.getToken(username, password).
 		then(function(response){
-			$.ajaxSetup({
+			controller.initDesktop(username);
+			$.cookie("nxuser", username);
+		});
+	},
+	initDesktop: function(username){
+					$.ajaxSetup({
 				beforeSend: function(xhr){
 					///xhr.setRequestHeader('X-Authentication-Token', response);
 					/* TODO : X-NXDocumentProperties header should
@@ -21,10 +30,6 @@ var controller = {
 					xhr.setRequestHeader('X-NXDocumentProperties','*');
 				}
 			});
-			controller.initDesktop(username);
-		});
-	},
-	initDesktop: function(username){
 		/* get user workspace data from model and ask view to display desktop */
 		model.getRoot(username).
 			then(model.getChildren).

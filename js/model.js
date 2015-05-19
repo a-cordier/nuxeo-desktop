@@ -31,7 +31,8 @@
  			success: function(data){
  				data.uid = doc.uid;
  				data['title'] = doc.title;
- 			}
+ 			},
+      headers: {'X-NXDocumentProperties':'*'}
  		});	
  	},
  	/* get result of the getChildren operation and add a ref to parent */

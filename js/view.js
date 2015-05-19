@@ -23,6 +23,9 @@ var view = {
   },
   displayDestop: function(content){
     var children = content.children;
+    if($('#desktopIcons').length){
+      $('#desktopIcons').remove();
+    }
     $('<ul id="desktopIcons"></ul>').appendTo($('#desktop'));
     for(var i in children){
       var iconPlaceHolder = $('<li></li>').appendTo($('#desktopIcons'));
