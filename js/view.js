@@ -26,13 +26,17 @@ var view = {
     if($('#desktopIcons').length){
       $('#desktopIcons').remove();
     }
+    if($('#menuItems').find('li').length){
+      $('#menuItems').find('li').remove();
+    }
+    view.populateMainMenu();
     $('<ul id="desktopIcons"></ul>').appendTo($('#desktop'));
     for(var i in children){
       var iconPlaceHolder = $('<li></li>').appendTo($('#desktopIcons'));
       if(controller.isFolderish(children[i])){
         iconPlaceHolder.append($('<div></div>').addClass('icon-big folder-collapsed-icon'));
         iconPlaceHolder.dblclick(
-          {doc: children[i]}, controller.openFolder);
+          {doc: children[i], init: true}, controller.openFolder);
       } else {
         iconPlaceHolder.append($('<div></div>').addClass('icon-big file-blank-icon'));
         iconPlaceHolder.dblclick(
@@ -164,14 +168,13 @@ createWindow: function(callback, data){
    var id = dialog.attr('id');
    var navBar = $('<div>').addClass('nav-bar').insertBefore(dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title')); 
    var backBtn = $('<span id="navBackBtn-' + id + '">').addClass('ui-icon back custom disabled').appendTo(navBar);
-   var nextBtn = $('<span id="navForwBtn-' + id + ~'">').addClass('ui-icon next custom disabled').appendTo(navBar);
+   var nextBtn = $('<span id="navForwBtn-' + id + '">').addClass('ui-icon next custom disabled').appendTo(navBar);
    view.updateNavBar(dialog);
   },
   updateNavBar: function(dialog){
     var id = dialog.attr('id');
     var history = model.cache.get(id);
     window.console.log("updateNavBar: " + id);
-    window.console.log(JSON.stringify(model.cache));
     var navBar = dialog.siblings('.ui-dialog-titlebar').find('.nav-bar');
     var backBtn = $('#navBackBtn-' + id), nextBtn = $('#navForwBtn-' + id);
     if(history && history.cursor > 0){
@@ -249,5 +252,11 @@ createWindow: function(callback, data){
   },
   cropTitle: function(title){
     return title.length > 8 ? title.substring(0, 5) + '...' : title;
+  },
+  populateMainMenu: function(){
+    $('#menuItems').append('<li id="logOutItem">Log out</li>');
+    $('#logOutItem').click(function(){
+      controller.logOut();
+    });
   }
 };

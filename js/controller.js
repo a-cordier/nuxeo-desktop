@@ -33,7 +33,7 @@ var controller = {
 	openFolder: function(event){ // TODO rename to openFolder
 		/* if document is folderish then display its content in a window */
 		var dialogId = event.data.dialogId;
-		window.console.log("open folder: " + event.data.dialogId);
+		window.console.log("open folder dialog id is " + event.data.dialogId);
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
@@ -46,8 +46,13 @@ var controller = {
 				// saving document to cache to allow prev./next navigation
 				if(!event.data.bypass){
 					controller.saveToCache(id, event.data.doc);
-					view.updateNavBar($('#'+id));
+					//view.updateNavBar($('#'+id));
+					window.console.log("openFolder - cursor = " + model.cache.get(id).cursor);
+					window.console.log(JSON.stringify(model.cache));
 				} 
+				if(!event.data.init) {
+					view.updateNavBar($('#'+id));
+				}
 			});
 	},
 	openFile: function(event){ // TODO rename to openFile
@@ -105,5 +110,9 @@ var controller = {
 	},
 	isFolderish: function(doc){
 		return doc.facets.indexOf('Folderish') > -1;
+	},
+	logOut: function(){
+		$.removeCookie("nxuser");
+		/// ...... to be continued
 	}
 }
