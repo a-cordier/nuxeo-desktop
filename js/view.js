@@ -9,19 +9,19 @@ var view = {
       {'height':$(window).height()*0.75, 'top':'25%'});
     $('#loginModal').modal({'backdrop':false});
   },
-  display: function(layer, app, data){
-    if(layer===model.constants.LAYER.DESKTOP){
-      view.displayDestop(data.content);
-    } else if( layer===model.constants.LAYER.WINDOW ){
-      switch(app){
-        case model.constants.APP.EXPLORER:
-          return view.displayExplorerWindow(data);
-        default:
-          break;
-      }
-    }
-  },
-  displayDestop: function(content){
+  // display: function(layer, app, data){
+  //   if(layer===model.constants.LAYER.DESKTOP){
+  //     view.displayDesktop(data.content);
+  //   } else if( layer===model.constants.LAYER.WINDOW ){
+  //     switch(app){
+  //       case model.constants.APP.EXPLORER:
+  //         return view.displayExplorerWindow(data);
+  //       default:
+  //         break;
+  //     }
+  //   }
+  // },
+  displayDesktop: function(content){
     var children = content.children;
     if($('#desktopIcons').length){
       $('#desktopIcons').remove();
@@ -57,7 +57,6 @@ var view = {
       window.console.log(id+ " is allready bound");
       id = model.guid();
      }
-     window.console.log("Effective dialog id: "  + id);
      view.createWindow(function(_data){
       var id = _data.id;
       var table = $('<table>'); 
@@ -65,6 +64,7 @@ var view = {
       view.head(table, ['', 'Title', 'Modified', 'Created', 'Type']);
       view.feedTable(table, _data.content);
     }, {'id': id, 'title': data.content['title'], 'content': data.content});
+     view.showNavBar($('#'+id));
      return id;
    }else {
     view.updateWindow(function(_data){
@@ -90,9 +90,13 @@ var view = {
       window.console.log(id+ " is allready bound");
       id = model.guid();
      }
-     window.console.log("Effective dialog id: "  + id);
+ 
      view.createWindow(function(_data){
-
+     var id = _data.id;
+     var cal = $('<div>');
+     cal.attr("id","#cal-"+id);
+     $("#"+id).append(cal);
+     cal.fullCalendar(); // TO DO CUSTOM DISPLAY AND BIND DATA
     }, {'id': id});
      return id;
    }else {
@@ -102,7 +106,7 @@ var view = {
      return data.dialogId;
   }
 },
-createWindow: function(callback, data){
+createWindow: function(callback, data, options){
   var id = data.id;
   $('body').append(
     $('<div>').
@@ -135,6 +139,7 @@ createWindow: function(callback, data){
       },
       'events': {
         "load": function(event,dialog){
+
         }
       }
     }
@@ -180,7 +185,7 @@ createWindow: function(callback, data){
        });
   });
     });
-  view.showNavBar($('#'+id));
+ // view.showNavBar($('#'+id));
 
   },
   updateWindow: function(callback, data){

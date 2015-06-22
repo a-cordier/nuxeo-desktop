@@ -27,7 +27,8 @@ var controller = {
 			then(model.getChildren).
 			then(model.getContent).
 			then(function(content){
-				view.display(model.constants.LAYER.DESKTOP, null, {'content': content});
+				view.displayDesktop(content);
+				//view.display(model.constants.LAYER.DESKTOP, null, {'content': content});
 			});
 	},
 	openFolder: function(event){ // TODO rename to openFolder
@@ -37,12 +38,16 @@ var controller = {
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
-				var id = view.display(
-					model.constants.LAYER.WINDOW, 
-					model.constants.APP.EXPLORER, 
+				// var id = view.display(
+				// 	model.constants.LAYER.WINDOW, 
+				// 	model.constants.APP.EXPLORER, 
+				// 	{'content': content, 
+				// 	 'dialogId': event.data.dialogId,				 
+				// 	});
+				var id = view.displayExplorerWindow(
 					{'content': content, 
-					 'dialogId': event.data.dialogId,				 
-					});
+				 	 'dialogId': event.data.dialogId,
+				    });
 				// saving document to cache to allow prev./next navigation
 				if(!event.data.bypass){
 					controller.saveToCache(id, event.data.doc);
@@ -115,6 +120,7 @@ var controller = {
 		/// ...... to be continued
 	},
 	launchCalendar: function(){
-		view.displayCalendarWindow({});
+		var id = view.displayCalendarWindow({});
+
 	}
 }
