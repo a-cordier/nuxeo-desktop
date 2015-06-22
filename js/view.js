@@ -80,6 +80,28 @@ var view = {
      return data.dialogId;
   }
 },
+  displayCalendarWindow: function(data) {
+    if(!data.dialogId) { 
+      /* make sure dialog id is unique,
+      among other things to allow binding
+      to its history */
+     var id=model.guid();
+     while($('#'+id).length){
+      window.console.log(id+ " is allready bound");
+      id = model.guid();
+     }
+     window.console.log("Effective dialog id: "  + id);
+     view.createWindow(function(_data){
+
+    }, {'id': id});
+     return id;
+   }else {
+    view.updateWindow(function(_data){
+     
+    }, {'dialogId': data.dialogId, 'content': data.content});
+     return data.dialogId;
+  }
+},
 createWindow: function(callback, data){
   var id = data.id;
   $('body').append(
@@ -255,8 +277,13 @@ createWindow: function(callback, data){
   },
   populateMainMenu: function(){
     $('#menuItems').append('<li id="logOutItem">Log out</li>');
+     $('#menuItems').append('<li id="calendar">Calendar</li>');
     $('#logOutItem').click(function(){
       controller.logOut();
     });
+    $('#calendar').click(function(){
+      controller.launchCalendar({});
+    });
+
   }
 };

@@ -46,7 +46,6 @@ var controller = {
 				// saving document to cache to allow prev./next navigation
 				if(!event.data.bypass){
 					controller.saveToCache(id, event.data.doc);
-					//view.updateNavBar($('#'+id));
 					window.console.log("openFolder - cursor = " + model.cache.get(id).cursor);
 					window.console.log(JSON.stringify(model.cache));
 				} 
@@ -95,7 +94,7 @@ var controller = {
 		var id = dialog.attr('id');
 		var history = model.cache.get(id);
 		var item = history.data[++history.cursor];
-				window.console.log("forward - cursor: " + history.cursor);
+		window.console.log("forward - cursor: " + history.cursor);
 		window.console.log("forward: retrived document: " + item.title);
 		if(item){
 			controller.openFolder({
@@ -114,5 +113,8 @@ var controller = {
 	logOut: function(){
 		$.removeCookie("nxuser");
 		/// ...... to be continued
+	},
+	launchCalendar: function(){
+		view.displayCalendarWindow({});
 	}
 }
