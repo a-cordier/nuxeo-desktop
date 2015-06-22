@@ -287,7 +287,7 @@ createWindow: function(callback, data, options){
       controller.logOut();
     });
     $('#calendar').click(function(){
-      controller.launchCalendar({});
+      controller.loadCalendars({});
     });
 
   }

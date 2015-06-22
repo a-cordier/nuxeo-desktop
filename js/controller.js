@@ -24,7 +24,10 @@ var controller = {
 	initDesktop: function(username){
 		/* get user workspace data from model and ask view to display desktop */
 		model.getRoot(username).
-			then(model.getChildren).
+			//then(model.getChildren).
+			then(function(content){
+				return model.getChildren(content);
+			}).
 			then(model.getContent).
 			then(function(content){
 				view.displayDesktop(content);
@@ -113,14 +116,36 @@ var controller = {
 		view.updateNavBar(dialog);
 	},
 	isFolderish: function(doc){
-		return doc.facets.indexOf('Folderish') > -1;
+		window.console.log(JSON.stringify(doc));
+		return doc.facets.indexOf('Folderish') > -1 || 
+			doc.facets.indexOf('Collection') > -1;
 	},
 	logOut: function(){
 		$.removeCookie("nxuser");
 		/// ...... to be continued
 	},
-	launchCalendar: function(){
+	loadCalendars: function(){
+		var username = $.cookie("nxuser");
+		controller.initCalendars(username);
+		model.getCalendars(username).
+			then(function(content){
+				return model.getChildrenByQuery(content,  {'includeHidden':'true'});
+			}).
+			then(model.getContent).
+			then(function(content){alert(JSON.stringify(content));});
 		var id = view.displayCalendarWindow({});
-
+	},
+	initCalendars: function(username){
+		model.getCalendars(username).
+		fail(function(result){
+			model.getRoot(username).
+			then(function(content){
+		//		alert('create agenda root');
+				return model.createFolder(content, '.agendas', true);
+			}).then(function(content){
+		//		alert('creating personnal agenda: ' + JSON.stringify(content));
+				model.createFolder(content, 'Personnal');
+			});
+		});
 	}
 }

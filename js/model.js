@@ -35,6 +35,23 @@
       headers: {'X-NXDocumentProperties':'*'}
  		});	
  	},
+  getChildrenByQuery: function(doc, options){
+    var query="select * from Document where ecm:parentId='"+doc.uid+"'";
+    if(typeof options === 'undefined' || 'true' !== options.includeHidden){
+        alert("hidden false");
+        query+=" AND ecm:mixinType !='HiddenInNavigation'"; 
+    }
+    return model.query(query, {'eager':'true'});
+  },
+  query: function(query, options){
+    return $.ajax({
+      url:'/nuxeo/api/v1/query?query='+query,
+      type: 'GET',
+      dataType: 'json',
+      headers: {'X-NXDocumentProperties':'*'}
+    });
+    
+  },
  	/* get result of the getChildren operation and add a ref to parent */
  	getContent: function(data){
  		return {
@@ -69,7 +86,27 @@
  	getDocumentById: function (id){
  		
  	},
- 	getSession: function(username, password){
+  getCalendars: function(username){
+      return $.ajax({
+      url: '/nuxeo/api/v1/path/default-domain/UserWorkspaces/' + username + '/.agendas',
+      type: 'GET',
+      dataType: 'json'
+    });
+  },
+  createFolder: function(parent, name, hidden){
+    return $.ajax({
+      url: '/nuxeo/api/v1/path' + parent.path,
+      type: 'POST',
+      dataType: 'json',
+      contentType: "application/json",
+      data: JSON.stringify({ 
+        "entity-type":"document",
+        "name": name ,
+        "type": (hidden==true? 'HiddenFolder':'Folder') ,
+        "properties": {"dc:title": name }})
+    });     
+  },
+  getSession: function(username, password){
  		return $.ajax({
        type: "GET",
        dataType: 'json',
