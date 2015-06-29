@@ -35,7 +35,7 @@
       headers: {'X-NXDocumentProperties':'*'}
  		});	
  	},
-  getChildrenByQuery: function(doc, options){
+  getChildrenWithQuery: function(doc, options){
     var query="select * from Document where ecm:parentId='"+doc.uid+"'";
     if(typeof options === 'undefined' || 'true' !== options.includeHidden){
         alert("hidden false");
@@ -86,13 +86,6 @@
  	getDocumentById: function (id){
  		
  	},
-  getCalendars: function(username){
-      return $.ajax({
-      url: '/nuxeo/api/v1/path/default-domain/UserWorkspaces/' + username + '/.agendas',
-      type: 'GET',
-      dataType: 'json'
-    });
-  },
   createFolder: function(parent, name, hidden){
     return $.ajax({
       url: '/nuxeo/api/v1/path' + parent.path,
@@ -116,6 +109,36 @@
        }
     });
  	},
+  getCalendars: function(username){
+      return $.ajax({
+      url: '/nuxeo/api/v1/path/default-domain/UserWorkspaces/' + username + '/.agendas',
+      type: 'GET',
+      dataType: 'json'
+    });
+  },
+  createEvent: function(calendar, eventObject){
+     return $.ajax({
+      url: '/nuxeo/api/v1/path' + parent.path,
+      type: 'POST',
+      dataType: 'json',
+      contentType: "application/json",
+      data: JSON.stringify({ 
+        "entity-type":"document",
+        "name": eventObject.title ,
+        "type": "VEVENT",
+        "properties": {
+          "dc:title": eventObject.title,
+          "vevent:location": eventObject.location,
+          "vevent:dtstart": eventObject.start,
+          "vevent:dtend": eventObject.end
+         }
+        })
+    });     
+  },
+  updateEvents: function(){
+    // fetch remote events and update the internal calendar object
+  },
+  calendars {}, // store events group by calendar
  	guid: function() {
 
   		function s4() {

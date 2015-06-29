@@ -96,7 +96,7 @@ var view = {
      var cal = $('<div>');
      cal.attr("id","#cal-"+id);
      $("#"+id).append(cal);
-     cal.fullCalendar(); // TO DO CUSTOM DISPLAY AND BIND DATA
+     cal.fullCalendar(controller.calendarConfig()); // TO DO CUSTOM DISPLAY AND BIND DATA
     }, {'id': id});
      return id;
    }else {

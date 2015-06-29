@@ -129,10 +129,12 @@ var controller = {
 		controller.initCalendars(username);
 		model.getCalendars(username).
 			then(function(content){
-				return model.getChildrenByQuery(content,  {'includeHidden':'true'});
+				return model.getChildrenWithQuery(content,  {'includeHidden':'true'});
 			}).
 			then(model.getContent).
-			then(function(content){alert(JSON.stringify(content));});
+			then(function(content){
+				alert(JSON.stringify(content));
+			});
 		var id = view.displayCalendarWindow({});
 	},
 	initCalendars: function(username){
@@ -147,5 +149,17 @@ var controller = {
 				model.createFolder(content, 'Personnal');
 			});
 		});
+	},
+	calendarConfig: function() {
+		return {
+			dayClick: function(date, jsEvent, view) {
+			        alert('Clicked on: ' + date.format());
+			        alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+			        alert('Current view: ' + view.name);
+			        // change the day's background color just for fun
+			        $(this).css('background-color', 'red');
+
+			}
+		};
 	}
 }
