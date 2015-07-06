@@ -125,17 +125,34 @@ var controller = {
 		/// ...... to be continued
 	},
 	loadCalendars: function(){
+		model.calendars = {};
 		var username = $.cookie("nxuser");
-		controller.initCalendars(username);
-		model.getCalendars(username).
-			then(function(content){
-				return model.getChildrenWithQuery(content,  {'includeHidden':'true'});
-			}).
-			then(model.getContent).
-			then(function(content){
-				alert(JSON.stringify(content));
-			});
-		var id = view.displayCalendarWindow({});
+		model.getCalendars(username)
+		.then(function(content){
+			return model.getChildren(content);
+		})
+		.then(model.getContent)
+		.then(function(content){
+			var children = content.children;
+			for(var i in children){
+				var calendar = children[i].title;
+				model.calendars[calendar] = {'events': []};
+				model.getChildrenWithQuery(children[i], {'docType':'VEVENT'} )
+				.then(model.getContent)
+				.then(function(content){
+					var _children = content.children;
+					for(var i in _children){
+						model.calendars[calendar].events.push(
+						{
+							'title': _children[i].title,
+							'start': _children[i].properties['vevent:dtstart'],
+							'end': _children[i].properties['vevent:dtend']
+						}
+						);
+					}
+				});
+			}
+		}).then(function(){view.displayCalendarWindow({});});
 	},
 	initCalendars: function(username){
 		model.getCalendars(username).
@@ -151,14 +168,19 @@ var controller = {
 		});
 	},
 	calendarConfig: function() {
+		alert('hello');
 		return {
+			events: model.calendars.Personnal.events,
 			dayClick: function(date, jsEvent, view) {
-			        alert('Clicked on: ' + date.format());
-			        alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-			        alert('Current view: ' + view.name);
 			        // change the day's background color just for fun
 			        $(this).css('background-color', 'red');
-
+			        model.createEvent('Personnal', 
+			        	{'start':date.format(),
+			        	'end': date.format(), 
+			        	'title':'baze',
+			        	'location': 'somewhere'
+			    		}
+			    	);
 			}
 		};
 	}
