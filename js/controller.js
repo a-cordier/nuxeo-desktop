@@ -168,8 +168,7 @@ var controller = {
 		});
 	},
 	calendarConfig: function() {
-		alert('hello');
-		return {
+		var config = {
 			events: model.calendars.Personnal.events,
 			dayClick: function(date, jsEvent, view) {
 			        // change the day's background color just for fun
@@ -183,5 +182,6 @@ var controller = {
 			    	);
 			}
 		};
+		return config;
 	}
 }
