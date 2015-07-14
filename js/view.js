@@ -9,18 +9,7 @@ var view = {
       {'height':$(window).height()*0.75, 'top':'25%'});
     $('#loginModal').modal({'backdrop':false});
   },
-  // display: function(layer, app, data){
-  //   if(layer===model.constants.LAYER.DESKTOP){
-  //     view.displayDesktop(data.content);
-  //   } else if( layer===model.constants.LAYER.WINDOW ){
-  //     switch(app){
-  //       case model.constants.APP.EXPLORER:
-  //         return view.displayExplorerWindow(data);
-  //       default:
-  //         break;
-  //     }
-  //   }
-  // },
+  /* Once authenticated it all begins with it ... */
   displayDesktop: function(content){
     var children = content.children;
     if($('#desktopIcons').length){
@@ -80,7 +69,7 @@ var view = {
      return data.dialogId;
   }
 },
-  displayCalendarWindow: function(data) {
+displayCalendarWindow: function(data) {
     if(!data.dialogId) { 
       /* make sure dialog id is unique,
       among other things to allow binding
@@ -108,6 +97,17 @@ var view = {
      return data.dialogId;
   }
 },
+displayEventWindow: function(data){
+  /*
+  EVENT CONFIGURATION
+   IN CASE OF ADDITION DATA SHOULD CONTAIN THE DATE OF THE DAY CLICKED 
+   FOR FORM FILLING
+
+   TODO: MAKE CREATE WINDOW RECEIVING SIZE AS PARAMETERS
+   (WE WANT A PORTRAIT WINDOW HERE)
+  */
+}, /* Every window is built based on this function
+A callback function should handle window content presentation*/
 createWindow: function(callback, data, options){
   var id = data.id;
   $('body').append(
@@ -167,7 +167,6 @@ createWindow: function(callback, data, options){
       height: '30px'
     };
     var targetPosition = $('#dialogStack').offset();
-    //targetPosition.top+=10;
     $.extend(properties, targetPosition);
     widget.animate(
       properties,
@@ -187,19 +186,20 @@ createWindow: function(callback, data, options){
        });
   });
     });
- // view.showNavBar($('#'+id));
 
   },
   updateWindow: function(callback, data){
     callback(data);
-  },
+  }, /* Nav bar provides previous/next navigation
+  functionalities */
   showNavBar: function(dialog){ // Prev. Next Buttons
    var id = dialog.attr('id');
    var navBar = $('<div>').addClass('nav-bar').insertBefore(dialog.siblings('.ui-dialog-titlebar').find('.ui-dialog-title')); 
    var backBtn = $('<span id="navBackBtn-' + id + '">').addClass('ui-icon back custom disabled').appendTo(navBar);
    var nextBtn = $('<span id="navForwBtn-' + id + '">').addClass('ui-icon next custom disabled').appendTo(navBar);
    view.updateNavBar(dialog);
-  },
+  }, /* this function updates nav bar view 
+  according to the current navigation context */
   updateNavBar: function(dialog){
     var id = dialog.attr('id');
     var history = model.cache.get(id);
@@ -228,7 +228,8 @@ createWindow: function(callback, data, options){
          nextBtn.unbind('click', controller.navigateForward);
       }
     }
-  },
+  }, /* This function feeds an explorer window with expected documents
+  using a table   */
   feedTable: function(table, content){
     var children = content.children;
     for(var i in children){
@@ -263,7 +264,7 @@ createWindow: function(callback, data, options){
         $(this).toggleClass("highlighted");
       });
     }
-  },
+  }, /* see feedTable */
   newRow: function(table, cols){ // add table row
     var row = $('<tr>');
     for(var i in cols){
@@ -271,7 +272,7 @@ createWindow: function(callback, data, options){
     }
     table.append(row);
     return row;
-  },    
+  },     /* see feedTable */
   head: function(table, cells){ // add table header
     var header = table.append($('<thead>').append('<tr>'));
     for(var i in cells){
@@ -281,7 +282,7 @@ createWindow: function(callback, data, options){
   },
   cropTitle: function(title){
     return title.length > 8 ? title.substring(0, 5) + '...' : title;
-  },
+  },  /* builds a "windows like" start menu */
   populateMainMenu: function(){
     $('#menuItems').append('<li id="logOutItem">Log out</li>');
      $('#menuItems').append('<li id="calendar">Calendar</li>');

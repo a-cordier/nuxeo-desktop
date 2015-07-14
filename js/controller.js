@@ -13,7 +13,7 @@ var controller = {
 		} else {
 			view.login(); 				
 		}
-	},
+	}, 
 	authenticate: function(username, password){
 		model.getSession(username, password).
 		then(function(response){
@@ -24,14 +24,12 @@ var controller = {
 	initDesktop: function(username){
 		/* get user workspace data from model and ask view to display desktop */
 		model.getRoot(username).
-			//then(model.getChildren).
 			then(function(content){
 				return model.getChildren(content);
 			}).
 			then(model.getContent).
 			then(function(content){
 				view.displayDesktop(content);
-				//view.display(model.constants.LAYER.DESKTOP, null, {'content': content});
 			});
 	},
 	openFolder: function(event){ // TODO rename to openFolder
@@ -41,12 +39,6 @@ var controller = {
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
-				// var id = view.display(
-				// 	model.constants.LAYER.WINDOW, 
-				// 	model.constants.APP.EXPLORER, 
-				// 	{'content': content, 
-				// 	 'dialogId': event.data.dialogId,				 
-				// 	});
 				var id = view.displayExplorerWindow(
 					{'content': content, 
 				 	 'dialogId': event.data.dialogId,
@@ -62,8 +54,9 @@ var controller = {
 				}
 			});
 	},
-	openFile: function(event){ // TODO rename to openFile
-		/* if document is file-like then display a pdf preview*/
+	openFile: function(event){ 
+		/* if document is file-like then display a pdf preview
+		To do: detect events and don't open theim this way (there's no blob attached) */
 		model.getBlob(event.data.doc, function(){
 			if(this.status == 200){
  				var fileURL = URL.createObjectURL(this.response);
@@ -78,7 +71,8 @@ var controller = {
 		history.cursor++; // keeping a track on the currently opened document
 		window.console.log("saving to cache - cursor: " + history.cursor);
 		model.cache.set(key, history);	
-	},
+	}, /* This function retrieves the last visited document in an explorer 
+	window, using a cache */
 	navigateBackward: function(event){
 		var dialog = event.data.dialog;
 		var id = dialog.attr('id');
@@ -97,6 +91,8 @@ var controller = {
 		}
 		view.updateNavBar(dialog);
 	},
+	/* when navigateBackward has been triggered, one can use 
+	navigateForward to get the previously visible document */
 	navigateForward: function(event){
 		var dialog = event.data.dialog;
 		var id = dialog.attr('id');
@@ -124,6 +120,7 @@ var controller = {
 		$.removeCookie("nxuser");
 		/// ...... to be continued
 	},
+	/* fetch all calendars for the current user */
 	loadCalendars: function(){
 		var username = $.cookie("nxuser");
 		model.calendars = {};
@@ -153,35 +150,36 @@ var controller = {
 						);
 						
 					}
-					//alert(JSON.stringify(calendars['Personnal']['events']));
 				}));
 			}
-//			model['calendars'] = calendars;
-			//alert('hele');
 			$.when.apply($, promises).then(function(){
 				view.displayCalendarWindow({});
 			});
 		});
-	},
+	}, /* Calendars are retrieved in a .agendas hidden folder located in
+	/default-domain/UserWorkspaces/${username}/
+	If we can't find one for the current user, let's create it 
+	By default a calendar called "Personnal" is created for each user
+	*/
 	initCalendars: function(username){
 		model.getCalendars(username).
 		fail(function(result){
 			model.getRoot(username).
 			then(function(content){
-		//		alert('create agenda root');
 				return model.createFolder(content, '.agendas', true);
 			}).then(function(content){
-		//		alert('creating personnal agenda: ' + JSON.stringify(content));
 				model.createFolder(content, 'Personnal');
 			});
 		});
-	},
+	}, /* This function returns an object
+	that is used to tell FullCalendar how to behave
+	and what to display
+	*/
 	configureFullCalendar: function() {
 		var config = {
 			'events': model.calendars['Personnal'].events,
 			dayClick: function(date, jsEvent, view) {
-			        // change the day's background color just for fun
-			        $(this).css('background-color', 'red');
+				// create event addition window
 			        model.createEvent('Personnal', 
 			        	{'start':date.format(),
 			        	'end': date.format(), 

@@ -22,7 +22,8 @@
  			dataType: 'json'
  		});    	
  	},
- 	/* self explanatory */
+ 	/* get children for the given document
+  this function does not operate recursivly */
  	getChildren: function(doc){
  		return $.ajax({
  			url: ['/nuxeo/api/v1/id/',doc.uid,'/@children'].join(''),
@@ -35,6 +36,8 @@
       headers: {'X-NXDocumentProperties':'*'}
  		});	
  	},
+  /* get children for the current document using fine grain options
+  TODO: merge the two function in one */
   getChildrenWithQuery: function(doc, options){
     var query="select * from Document where ecm:parentId='"+doc.uid+"'";
     if(typeof options === 'undefined' || 'true' !== options.includeHidden){
@@ -137,7 +140,8 @@
          }
       })
     });     
-  },
+  }, /* this id generation function is used to 
+  keep every window attached to a unique id and isolate its context */
  	guid: function() {
 
   		function s4() {
@@ -147,7 +151,9 @@
   		}
   		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     		s4() + '-' + s4() + s4() + s4();
-	},
+	}, /* document cache used to keep tracks of visited document
+  (the navbar neeeds it)
+  */
   cache: {
     init: function(){
       if(typeof(this.memory) === 'undefined'){
