@@ -125,34 +125,43 @@ var controller = {
 		/// ...... to be continued
 	},
 	loadCalendars: function(){
-		model.calendars = {};
 		var username = $.cookie("nxuser");
+		model.calendars = {};
+		var promises = [];
 		model.getCalendars(username)
 		.then(function(content){
 			return model.getChildren(content);
 		})
 		.then(model.getContent)
 		.then(function(content){
+			var calendars = {};
 			var children = content.children;
 			for(var i in children){
 				var calendar = children[i].title;
 				model.calendars[calendar] = {'events': []};
-				model.getChildrenWithQuery(children[i], {'docType':'VEVENT'} )
+				promises.push(model.getChildrenWithQuery(children[i], {'docType':'VEVENT'} )
 				.then(model.getContent)
 				.then(function(content){
 					var _children = content.children;
 					for(var i in _children){
-						model.calendars[calendar].events.push(
-						{
-							'title': _children[i].title,
-							'start': _children[i].properties['vevent:dtstart'],
-							'end': _children[i].properties['vevent:dtend']
-						}
+						model.calendars[calendar]['events'].push(
+							{
+								'title': _children[i].title,
+								'start': _children[i].properties['vevent:dtstart'],
+								'end': _children[i].properties['vevent:dtend']
+							}
 						);
+						
 					}
-				});
+					//alert(JSON.stringify(calendars['Personnal']['events']));
+				}));
 			}
-		}).then(function(){view.displayCalendarWindow({});});
+//			model['calendars'] = calendars;
+			//alert('hele');
+			$.when.apply($, promises).then(function(){
+				view.displayCalendarWindow({});
+			});
+		});
 	},
 	initCalendars: function(username){
 		model.getCalendars(username).
@@ -167,9 +176,9 @@ var controller = {
 			});
 		});
 	},
-	calendarConfig: function() {
+	configureFullCalendar: function() {
 		var config = {
-			events: model.calendars.Personnal.events,
+			'events': model.calendars['Personnal'].events,
 			dayClick: function(date, jsEvent, view) {
 			        // change the day's background color just for fun
 			        $(this).css('background-color', 'red');
