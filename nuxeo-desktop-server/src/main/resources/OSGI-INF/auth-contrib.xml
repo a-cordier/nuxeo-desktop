@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="com.acordier.nuxeo.desktop.auth">
+	<require>org.nuxeo.ecm.platform.ui.web.auth.defaultConfig</require>
+	<require>org.nuxeo.ecm.platform.ui.web.auth.WebEngineConfig</require>
+	<require>org.nuxeo.ecm.automation.server.auth.config</require>
+	<require>org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService
+	</require>
+	<require>org.nuxeo.ecm.restapi.server.auth.config</require>
+
+	<extension
+		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+		point="authenticators">
+		<authenticationPlugin name="BASIC_AUTH_STATEFUL"
+			enabled="true"
+			class="org.nuxeo.ecm.platform.ui.web.auth.plugins.BasicAuthenticator">
+			<needStartingURLSaving>true</needStartingURLSaving>
+			<stateful>true</stateful>
+			<!-- <parameters> -->
+			<!-- <parameter name="UsernameKey">username</parameter> -->
+			<!-- <parameter name="PasswordKey">password</parameter> -->
+			<!-- </parameters> -->
+		</authenticationPlugin>
+	</extension>
+	<extension
+		target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+		point="specificChains">
+		<specificAuthenticationChain name="RestAPI">
+			<urlPatterns>
+				<url>(.*)/api/v.*</url>
+			</urlPatterns>
+			<replacementChain>
+				<plugin>BASIC_AUTH_STATEFUL</plugin>
+			</replacementChain>
+		</specificAuthenticationChain>
+
+	</extension>
+
+</component>

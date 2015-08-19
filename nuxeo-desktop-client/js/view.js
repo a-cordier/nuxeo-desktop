@@ -10,7 +10,7 @@ var view = {
     $('#loginModal').modal({'backdrop':false});
   },
   /* Once authenticated it all begins with it ... */
-  displayDesktop: function(content){
+  desktop: function(content){
     var children = content.children;
     if($('#desktopIcons').length){
       $('#desktopIcons').remove();
@@ -36,7 +36,7 @@ var view = {
       iconPlaceHolder.draggable();
     }
   },
-  displayExplorerWindow: function(data) {
+  explorerWindow: function(data) {
     if(!data.dialogId) { 
       /* make sure dialog id is unique,
       among other things to allow binding
@@ -69,7 +69,7 @@ var view = {
      return data.dialogId;
   }
 },
-displayCalendarWindow: function(data) {
+calendarWindow: function(data) {
     if(!data.dialogId) { 
       /* make sure dialog id is unique,
       among other things to allow binding
@@ -97,7 +97,7 @@ displayCalendarWindow: function(data) {
      return data.dialogId;
   }
 },
-displayEventWindow: function(data){
+eventWindow: function(data){
   /*
   EVENT CONFIGURATION
    IN CASE OF ADDITION DATA SHOULD CONTAIN THE DATE OF THE DAY CLICKED 
@@ -106,6 +106,26 @@ displayEventWindow: function(data){
    TODO: MAKE CREATE WINDOW RECEIVING SIZE AS PARAMETERS
    (WE WANT A PORTRAIT WINDOW HERE)
   */
+    if(!data.dialogId) { 
+      /* make sure dialog id is unique,
+      among other things to allow binding
+      to its history */
+     var id=model.guid();
+     while($('#'+id).length){
+      window.console.log(id+ " is allready bound");
+      id = model.guid();
+     }
+ 
+     view.createWindow(function(_data){
+     var id = _data.id;
+    }, {'id': id}, {width:220, height: 320});
+     return id;
+   }else {
+    view.updateWindow(function(_data){
+     
+    }, {'dialogId': data.dialogId, 'content': data.content});
+     return data.dialogId;
+  }
 }, /* Every window is built based on this function
 A callback function should handle window content presentation*/
 createWindow: function(callback, data, options){
@@ -116,9 +136,11 @@ createWindow: function(callback, data, options){
     attr('id', id).
     addClass('dialog_window'));
   callback(data);
+  var width = (options && options.width) || 520,
+      height = (options && options.height) || 375;
   $('#'+id).dialog(
-    {'width':560,
-    'height':375,
+    {'width':width,
+    'height':height,
     close: function(event, ui) { 
       $(this).dialog('destroy').remove(); 
       if(model.cache.get(id)){

@@ -29,7 +29,7 @@ var controller = {
 			}).
 			then(model.getContent).
 			then(function(content){
-				view.displayDesktop(content);
+				view.desktop(content);
 			});
 	},
 	openFolder: function(event){ // TODO rename to openFolder
@@ -39,7 +39,7 @@ var controller = {
 		model.getChildren(event.data.doc).
 			then(model.getContent).
 			then(function(content){
-				var id = view.displayExplorerWindow(
+				var id = view.explorerWindow(
 					{'content': content, 
 				 	 'dialogId': event.data.dialogId,
 				    });
@@ -153,7 +153,7 @@ var controller = {
 				}));
 			}
 			$.when.apply($, promises).then(function(){
-				view.displayCalendarWindow({});
+				view.calendarWindow({});
 			});
 		});
 	}, /* Calendars are retrieved in a .agendas hidden folder located in
@@ -178,16 +178,21 @@ var controller = {
 	configureFullCalendar: function() {
 		var config = {
 			'events': model.calendars['Personnal'].events,
-			dayClick: function(date, jsEvent, view) {
+			dayClick: function(date, jsEvent, cview) {
 				// create event addition window
-			        model.createEvent('Personnal', 
-			        	{'start':date.format(),
-			        	'end': date.format(), 
-			        	'title':'baze',
-			        	'location': 'somewhere'
-			    		}
-			    	);
-			}
+			     //    model.createEvent('Personnal', 
+			     //    	{'start':date.format(),
+			     //    	'end': date.format(), 
+			     //    	'title':'baze',
+			     //    	'location': 'somewhere'
+			    	// 	}
+			    	// );
+			},
+			dayRender: function(date, element, cview){
+       			element.bind('dblclick', function() {
+            		view.eventWindow({});
+        		});
+    		}
 		};
 		return config;
 	}

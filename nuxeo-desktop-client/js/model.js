@@ -1,8 +1,9 @@
 /**
  * @author: com.acordier@gmail.com
  * @update: sept. 2014
- * this model class is responsible for fetching data from nuxeo server 
- * using rest calls and storing constants used to enforce logic
+ * fetching data from nuxeo server 
+ * using rest calls 
+ * storing constants
  */
  var model = {
  	constants: {
@@ -37,7 +38,7 @@
  		});	
  	},
   /* get children for the current document using fine grain options
-  TODO: merge the two function in one */
+  TODO: merge with getChildren */
   getChildrenWithQuery: function(doc, options){
     var query="select * from Document where ecm:parentId='"+doc.uid+"'";
     if(typeof options === 'undefined' || 'true' !== options.includeHidden){
