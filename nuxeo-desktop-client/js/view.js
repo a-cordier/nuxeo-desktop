@@ -118,6 +118,10 @@ eventWindow: function(data){
  
      view.createWindow(function(_data){
      var id = _data.id;
+     var form = $('<form role="form">');
+     form.attr("id","#new-event-"+id);
+     view.feedEventForm(form);
+     $("#"+id).append(form);
     }, {'id': id}, {width:220, height: 320});
      return id;
    }else {
@@ -126,7 +130,13 @@ eventWindow: function(data){
     }, {'dialogId': data.dialogId, 'content': data.content});
      return data.dialogId;
   }
-}, /* Every window is built based on this function
+},
+feedEventForm: function(form, data){
+  var formGroup = $('<div class="form-group">');
+  formGroup.append($('<label for="event-name">Event:</label>'));
+  formGroup.append($('<input type="text" class="form-control" id="event-name">'));
+  form.append(formGroup);
+},/* Every window is built based on this function
 A callback function should handle window content presentation*/
 createWindow: function(callback, data, options){
   var id = data.id;
