@@ -190,7 +190,7 @@ var controller = {
 			},
 			dayRender: function(date, element, cview){
        			element.bind('dblclick', function() {
-            		view.eventWindow({});
+            		view.eventWindow({"date": date});
         		});
     		}
 		};

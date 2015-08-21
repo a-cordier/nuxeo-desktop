@@ -97,7 +97,7 @@ calendarWindow: function(data) {
      return data.dialogId;
   }
 },
-eventWindow: function(data){
+eventWindow: function(data) {
   /*
   EVENT CONFIGURATION
    IN CASE OF ADDITION DATA SHOULD CONTAIN THE DATE OF THE DAY CLICKED 
@@ -115,14 +115,14 @@ eventWindow: function(data){
       window.console.log(id+ " is allready bound");
       id = model.guid();
      }
- 
+    data.id = id;
      view.createWindow(function(_data){
      var id = _data.id;
      var form = $('<form role="form">');
      form.attr("id","#new-event-"+id);
-     view.feedEventForm(form);
+     view.feedEventForm(form, _data);
      $("#"+id).append(form);
-    }, {'id': id}, {width:220, height: 320});
+    }, data, {width:320, height: 430});
      return id;
    }else {
     view.updateWindow(function(_data){
@@ -131,11 +131,100 @@ eventWindow: function(data){
      return data.dialogId;
   }
 },
-feedEventForm: function(form, data){
-  var formGroup = $('<div class="form-group">');
-  formGroup.append($('<label for="event-name">Event:</label>'));
-  formGroup.append($('<input type="text" class="form-control" id="event-name">'));
+/* to do include window id */
+feedEventForm: function(form, data) {
+  var textField = function(id, labelText, options){
+    var formGroup = $('<div class="form-group">');
+    var div = $('<div class="col-md-8">');
+    var label = $('<label class="control-label">');
+    label.attr('for', id);
+    label.text(labelText);
+    div.append(label);
+    div.append($('<input type="text" class="form-control input-sm">'));
+    div.attr('id', id);
+    formGroup.append(div);
+    return formGroup;
+  }
+
+  var dateField = function(id, labelText, dateTime){
+    var formGroup = $('<div class="form-group">');
+    var div = $('<div class="col-md-12 ">');
+    var label = $('<label class="control-label">');
+    label.attr('for', id);
+    label.text(labelText);
+    div.append(label);
+    var _div = $('<div class="input-group date">');
+    div.attr('id', id)
+    _div.append('<input type="text" class="form-control" />');
+    _div.append('<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>');
+    _div.find('input').val(dateTime);
+    _div.datetimepicker({format: 'LLLL'});
+    div.append(_div);
+    formGroup.append(div);
+    return formGroup;
+  }
+
+  var checkBox = function(id, labelText) {
+     var formGroup = $('<div class="form-group form-inline">');
+     var div = $('<div class="col-md-12">');
+     var label = $('<label class="control-label">');
+     label.attr('for', id);
+     label.text(labelText);
+     div.append(label);
+     var checkbox = $('<input type="checkbox" value="" class="form-control">');
+     checkbox.click(function() {
+      var _id = id.slice(-36);
+  //    alert(_id);
+      if($(this).is(':checked')){
+       // alert('checked');
+        $('#endDatePicker-' + _id).hide();
+      }
+      else {
+        $('#endDatePicker-' + _id).show();        
+      }
+     });
+     div.append(checkbox);
+     div.attr('id', id);
+     formGroup.append(div);     
+     return formGroup;
+  }
+
+  var textArea = function( id, labelText, options ) {
+    var formGroup = $('<div class="form-group">');
+    var div = $('<div class="col-md-8">');
+    var label = $('<label class="control-label">');
+    label.attr('for', id);
+    label.text(labelText);
+    div.append(label);
+    div.append($('<textarea class="form-control">'));
+    div.attr('id', id);
+    formGroup.append(div);
+    return formGroup;    
+  }
+
+  var formGroup = textField('event-name-'+data.id, 'Event name:');
   form.append(formGroup);
+  formGroup = dateField('startDatePicker-'+data.id, 'Event starts:', data.date);
+  form.append(formGroup);
+  formGroup = dateField('endDatePicker-'+data.id, 'Event ends:', data.date);
+  form.append(formGroup);
+  formGroup = checkBox('allDayCheck-'+data.id, 'All day event  ');
+  form.append(formGroup);  
+  formGroup = textField('event-location-'+data.id, 'Event location:');
+  form.append(formGroup);
+  formGroup = textArea('event-description-'+data.id, 'Event description:');
+  form.append(formGroup);
+  // div = $('<div class="col-md-12 ">');
+  // div.append($('<label class="control-label" for="event-name">Start date:</label>'));
+  // var _div = $('<div class="input-group date">');
+  // _div.attr('id', 'startDatePicker-' + data.id)
+  // _div.append('<input type="text" class="form-control" />');
+  // _div.append('<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>');
+  // _div.find('input').val(data.date);
+  // div.append(_div);
+  // formGroup.append(div);
+  // form.append(formGroup);
+  // _div.datetimepicker({format: 'LLLL'});
 },/* Every window is built based on this function
 A callback function should handle window content presentation*/
 createWindow: function(callback, data, options){
