@@ -175,7 +175,7 @@ var controller = {
 	that is used to tell FullCalendar how to behave
 	and what to display
 	*/
-	configureFullCalendar: function() {
+	configureFullCalendar: function(wrapper) {
 		var config = {
 			'events': model.calendars['Personnal'].events,
 			dayClick: function(date, jsEvent, cview) {
@@ -190,10 +190,13 @@ var controller = {
 			},
 			dayRender: function(date, element, cview){
        			element.bind('dblclick', function() {
-            		view.eventWindow({"date": date});
+            		view.eventWindow({"date": date,"wrapper": wrapper});
         		});
     		}
 		};
 		return config;
+	},
+	saveEvent: function(event){
+		model.createEvent(null, event);
 	}
 }
