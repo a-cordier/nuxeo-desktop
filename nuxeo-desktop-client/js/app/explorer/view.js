@@ -31,6 +31,23 @@ define(
             'content': data.content
           });
           this.showNavBar($('#' + id));
+          $('#' + id).on('dragenter', function(event){
+            event.stopPropagation();
+            event.preventDefault();
+            $(this).addClass('file-dragover');
+            //$(this).css('border', 'solid 5px green');
+          });
+          $('#' + id).on('dragover', function(event){
+            event.stopPropagation();
+            event.preventDefault();
+          });
+          $('#' + id).on('drop', function(event){
+           event.preventDefault();
+           var files = event.originalEvent.dataTransfer.files;
+           $(this).removeClass('file-dragover');
+            //We need to send dropped files to Server
+            //handleFileUpload(files,obj);
+          });
           return id;
         } else {
           commonView.updateWindow(function(_data) {
