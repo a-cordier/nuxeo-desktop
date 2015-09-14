@@ -5,10 +5,11 @@ define(
     'common/controller',
     'calendar/controller',
     'datetimepicker',
+    'moment',
     'jquery-ui',
     'jquery'
   ],
-  function(require, commonView, commonController, controller, dateTimePicker, $) {
+  function(require, commonView, commonController, controller, dateTimePicker, moment, $) {
     return {
       calendarWindow: function(data) {
         if (!data.dialogId) {
@@ -206,9 +207,11 @@ define(
         btnBar.append(btn('submit-' + data.id, 'Save', 'button', 'btn-primary', function(button) {
           button.click(function() {
             var form = button.closest('form');
+                      	alert(moment(form.find('div[id^=startDatePicker-]').find('input').val()).format());
+
             var evt = {
               'title': form.find('div[id^=event-name]').find('input').val(),
-              'start': form.find('div[id^=startDatePicker-]').find('input').val()
+              'start': moment(form.find('div[id^=startDatePicker-]').find('input').val()).format()
             };
             data.wrapper.fullCalendar('renderEvent', evt);
             require('calendar/controller').saveEvent(evt);

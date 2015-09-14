@@ -7,7 +7,7 @@ require.config({
     'explorer': '../app/explorer',
     'common': '../app/common',
     'auth': '../app/auth',
-    'moment': ['moment.min', 'moment'],
+    'moment': ['moment','moment.min'],
     'datetimepicker': 'bootstrap-datetimepicker.min',
     'fullcalendar': 'fullcalendar.min',
     'jquery': ['jquery.min', 'jquery'],

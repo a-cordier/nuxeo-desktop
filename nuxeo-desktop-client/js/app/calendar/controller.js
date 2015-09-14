@@ -13,38 +13,45 @@ define(
       /* fetch all calendars for the current user */
       loadCalendars: function() {
         var username = $.cookie("nxuser");
-        require('calendar/model').calendars = {};
+        model.calendars = model.calendars || {};
         var promises = [];
-        require('calendar/model').getCalendars(username)
+        model.getCalendars(username)
           .then(function(content) {
             return commonModel.getChildren(content);
           })
           .then(commonModel.getContent)
           .then(function(content) {
-            var calendars = {};
             var children = content.children;
             for (var i in children) {
               var calendar = children[i].title;
-              require('calendar/model').calendars[calendar] = {
+              window.console.log(""+i+": "+calendar);
+
+              model.calendars[calendar] = {
                 'events': []
               };
-              promises.push(commonModel.getChildrenWithQuery(children[i], {
-                  'docType': 'VEVENT'
-                })
-                .then(model.getContent)
-                .then(function(content) {
-                  var _children = content.children;
-                  for (var i in _children) {
-                    require('calendar/model').calendars[calendar]['events'].push({
-                      'title': _children[i].title,
-                      'start': _children[i].properties['vevent:dtstart'],
-                      'end': _children[i].properties['vevent:dtend']
-                    });
+              (function(calendar){
+	              promises.push(commonModel.getChildrenWithQuery(children[i], {
+	                  'docType': 'VEVENT'
+	                })
+	                .then(model.getContent)
+	                .then(function(content) {
+	 
+	                  var _children = content.entries;
+	                  for (var i in _children) {
+	                  	window.console.log('calendar: ' + calendar );
+	                  	window.console.log(_children[i].title + ' - ' + _children[i].properties['vevent:dtstart']);
+	                    require('calendar/model').calendars[calendar]['events'].push({
+	                      'title': _children[i].title,
+	                      'start': _children[i].properties['vevent:dtstart'],
+	                      'end': _children[i].properties['vevent:dtend']
+	                    });
+						window.console.log(JSON.stringify(require('calendar/model').calendars['Personnal'].events));
 
-                  }
-                }));
+	                  }
+	                }));
+              })(calendar);
             }
-            $.when.apply($, promises).then(function() {
+            $.when.apply($, promises).done(function() {
               require('calendar/view').calendarWindow({});
             });
           });
@@ -55,7 +62,7 @@ define(
 	By default a calendar called "Personnal" is created for each user
 	*/
       initCalendars: function(username) {
-        require('calendar/model').getCalendars(username).
+        model.getCalendars(username).
         fail(function(result) {
           commonModel.getRoot(username).
           then(function(content) {
@@ -70,6 +77,7 @@ define(
 	and what to display
 	*/
       configureFullCalendar: function(wrapper) {
+      	console.log(JSON.stringify(model.calendars['Personnal']));
         var config = {
           'events': require('calendar/model').calendars['Personnal'].events,
           dayClick: function(date, jsEvent, cview) {
@@ -94,7 +102,7 @@ define(
         return config;
       },
       saveEvent: function(event) {
-        require('calendar/model').createEvent(null, event);
+        model.createEvent("Personnal", event);
       }
     };
   }
