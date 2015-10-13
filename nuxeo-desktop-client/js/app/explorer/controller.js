@@ -3,10 +3,11 @@ define(
     'require',
     'common/model',
     'common/controller',
+    'explorer/model',
     'explorer/view',
     'jquery'
   ],
-  function(require, commonModel, commonController, view, $) {
+  function(require, commonModel, commonController, model, view, $) {
     return {
       openFolder: function(event) { // TODO rename to openFolder
         /* if document is folderish then display its content in a window */
@@ -33,7 +34,7 @@ define(
       openFile: function(event) {
         /* if document is file-like then display a pdf preview
         To do: detect events and don't open theim this way (there's no blob attached) */
-        commonModel.getBlob(event.data.doc, function() {
+        commonModel.getPdfPreview(event.data.doc, function() {
           if (this.status == 200) {
             var fileURL = URL.createObjectURL(this.response);
             window.open(fileURL);
@@ -79,6 +80,9 @@ define(
           });
         }
         require('explorer/view').updateNavBar(dialog);
+      },
+      createFile: function(files, parent){
+        require('explorer/model').createFile(files, parent);
       }
     };
   }

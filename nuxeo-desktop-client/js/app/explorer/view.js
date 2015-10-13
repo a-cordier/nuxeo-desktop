@@ -31,6 +31,8 @@ define(
             'content': data.content
           });
           this.showNavBar($('#' + id));
+          // utile ou pas ? v
+         // $('#' + id).append(['<div data-docId="',data.content.uid,'"  style="display: none;">'].join(''));
           $('#' + id).on('dragenter', function(event){
             event.stopPropagation();
             event.preventDefault();
@@ -41,10 +43,22 @@ define(
             event.stopPropagation();
             event.preventDefault();
           });
-          $('#' + id).on('drop', function(event){
+            $('#' + id).on('dragleave', function(event){
            event.preventDefault();
-           var files = event.originalEvent.dataTransfer.files;
            $(this).removeClass('file-dragover');
+          });
+          $('#' + id).on('drop', function(event){
+            if(event.originalEvent.dataTransfer){
+              if(event.originalEvent.dataTransfer.files.length) {
+               event.preventDefault();
+               event.stopPropagation();
+               //$(this).css('border', '3px dashed green');
+               var files = event.originalEvent.dataTransfer.files;
+                $(this).removeClass('file-dragover');
+                require('explorer/controller').createFile(files, data.content.uid);
+              }  
+            }
+           
             //We need to send dropped files to Server
             //handleFileUpload(files,obj);
           });
@@ -63,6 +77,11 @@ define(
             'dialogId': data.dialogId,
             'content': data.content
           });
+          if($("div[data-docId]").length) {
+            $("div[data-docId]").remove();
+          }
+          // utile ou pas ?
+          //$('#' + id).append(['<div data-docid="',data.content.uid,'"  style="display: none;">'].join(''));
           return data.dialogId;
         }
       },

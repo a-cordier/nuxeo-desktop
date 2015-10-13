@@ -32,6 +32,10 @@ require.config({
       exports: "$",
       deps: ['jquery', 'moment']
     },
+    "nuxeo": {
+      exports: "nuxeo",
+      deps: ['jquery']
+    },
     "bootstrap": ['jquery']
   }
 });

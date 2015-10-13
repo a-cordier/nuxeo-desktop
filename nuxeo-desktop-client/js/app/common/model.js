@@ -54,6 +54,17 @@ define(['jquery'], function() {
         'params': {}
       }));
     },
+    /* convert a blob holder as a pdf and get result as stream */
+    getPdfPreview: function (doc, callback){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', ['/nuxeo/api/v1/id/',doc.uid,'/@blob/file:content/@op/Blob.ToPDF'].join(''), true);
+      xhr.setRequestHeader('Content-Type', 'application/json+nxrequest');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      xhr.overrideMimeType('application/pdf');
+      xhr.responseType = 'blob';
+      xhr.onload = callback;
+      xhr.send(JSON.stringify({'params':{}}));
+    },
     /* get result of the getChildren operation and add a ref to parent */
     getContent: function(data) {
       return {
