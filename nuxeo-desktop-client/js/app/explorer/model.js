@@ -7,6 +7,7 @@ define(
     return {
     	createFile: function(files, parent){
     		var file=files[0];
+    		var self = this;
     		alert(file.type);
     		var client = new nuxeo.Client();
     		client.operation('Document.Create')
@@ -23,12 +24,15 @@ define(
 			   var id = doc.uid;
 			   var reader = new FileReader();
 			   reader.onload = function(evt){
-			   		alert(evt.target.result);
+			   		//self.attachBlob(evt.target.result, id);
 			   }
-			   reader.readAsDataURL(file);   
+			   //reader.readAsDataURL(file);   
+			   self.attachBlob(file, id);
 			});
 		}, // createFile
 		attachBlob: function(file, id){
+			//alert(file);
+			var client = new nuxeo.Client();
 			// Create the uploader bound to the operation
 			  var uploader = client.operation("Blob.Attach")
 			  	.params({ document: id,
@@ -44,6 +48,7 @@ define(
 			      // something went wrong
 			      throw error;
 			    }
+			    alert(data);
 			  });
 			});
  //execute
